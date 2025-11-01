@@ -12,7 +12,6 @@ import { CreateDocumentUseCase } from '@features/document-management/application
 import { UpdateDocumentUseCase } from '@features/document-management/application/use-cases/document/update-document.use-case';
 import { SoftDeleteDocumentUseCase } from '@features/document-management/application/use-cases/document/soft-delete-document.use-case';
 import { FindDocumentPaginatedListUseCase } from '@features/document-management/application/use-cases/document/find-document-paginated-list.use-case';
-import { MinioAdapter } from '@features/upload/infrastructure/adapters/minio.adapter';
 
 @Module({
   imports: [PostgresqlDatabaseModule],
@@ -38,10 +37,6 @@ import { MinioAdapter } from '@features/upload/infrastructure/adapters/minio.ada
     {
       provide: CONSTANTS_REPOSITORY_TOKENS.ACTIVITYLOGS,
       useClass: ActivityLogRepositoryImpl,
-    },
-    {
-      provide: CONSTANTS_REPOSITORY_TOKENS.UPLOAD_PORT,
-      useClass: MinioAdapter,
     },
     {
       provide: CONSTANTS_REPOSITORY_TOKENS.ERROR_HANDLER,
