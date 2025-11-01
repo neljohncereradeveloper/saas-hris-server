@@ -1,0 +1,35 @@
+services:
+  - type: web
+    name: hris-api
+    runtime: node
+    plan: starter
+    buildCommand: yarn install && yarn build
+    startCommand: yarn start:prod
+    healthCheckPath: /api/docs
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        fromService:
+          type: web
+          name: hris-api
+          property: port
+      # Database configuration (set these in Render dashboard)
+      # - key: DB_TYPE
+      #   value: postgres
+      # - key: DB_HOST
+      #   sync: false
+      # - key: DB_PORT
+      #   sync: false
+      # - key: DB_USERNAME
+      #   sync: false
+      # - key: DB_PASSWORD
+      #   sync: false
+      # - key: DB_DATABASE
+      #   sync: false
+      # - key: JWT_SECRET
+      #   sync: false
+      # - key: CORS_ORIGINS
+      #   sync: false
+      # - key: SERVER
+      #   sync: false

@@ -31,7 +31,7 @@ async function bootstrap() {
   );
 
   const configService = app.get(ConfigService);
-  const PORT = configService.get('PORT');
+  const PORT = configService.get('PORT', 3000);
   const CORS_ORIGINS = configService.get<string>('CORS_ORIGINS');
   const SERVER = configService.get<string>('SERVER');
   const originArray = CORS_ORIGINS
