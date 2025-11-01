@@ -19,7 +19,7 @@ import { HolidayModule } from '@features/shared/infrastructure/modules/holiday/h
     CoreDocumentManagementModule,
     CoreLeaveManagementModule,
     HolidayModule,
-    UploadModule,
+    // UploadModule,
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '..', '..', 'images'),
       serveRoot: '/images',
