@@ -26,7 +26,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-@ApiTags('Leave-Management-Leave-Cycle')
+@ApiTags('Leave Cycle')
 @Controller(CONSTANTS_CONTROLLERS.LEAVE_CYCLE)
 export class LeaveCycleController {
   constructor(
@@ -75,10 +75,7 @@ export class LeaveCycleController {
   @ApiResponse({ status: 400, description: 'Bad request - validation error' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBearerAuth('JWT-auth')
-  async setup(
-    @Body() dto: SetupLeaveCyclesDto,
-    @Req() request: Request,
-  ) {
+  async setup(@Body() dto: SetupLeaveCyclesDto, @Req() request: Request) {
     return this.setupLeaveCyclesUseCase.execute(
       dto,
       (request as any).user?.id || 'system',
@@ -156,4 +153,3 @@ export class LeaveCycleController {
     );
   }
 }
-

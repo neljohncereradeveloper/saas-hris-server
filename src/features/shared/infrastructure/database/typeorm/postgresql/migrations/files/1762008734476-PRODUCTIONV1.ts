@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class PRODUCTIONV11761989034530 implements MigrationInterface {
-    name = 'PRODUCTIONV11761989034530'
+export class PRODUCTIONV11762008734476 implements MigrationInterface {
+    name = 'PRODUCTIONV11762008734476'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -414,57 +414,6 @@ export class PRODUCTIONV11761989034530 implements MigrationInterface {
         `);
         await queryRunner.query(`
             CREATE INDEX "IDX_f974c10798a9298f1772629477" ON "emp_movement" ("employeeid", "effectivedate")
-        `);
-        await queryRunner.query(`
-            CREATE TABLE "document_type" (
-                "id" SERIAL NOT NULL,
-                "desc1" character varying(255) NOT NULL,
-                "name" character varying(255) NOT NULL,
-                "isactive" boolean NOT NULL DEFAULT true,
-                "createdat" TIMESTAMP NOT NULL DEFAULT now(),
-                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
-                "createdby" character varying(100),
-                "updatedby" character varying(100),
-                CONSTRAINT "UQ_d63f0a80a96310fe1e9657795ff" UNIQUE ("name"),
-                CONSTRAINT "PK_2e1aa55eac1947ddf3221506edb" PRIMARY KEY ("id")
-            )
-        `);
-        await queryRunner.query(`
-            CREATE INDEX "IDX_247f28a1e02d73a5c0e576b70a" ON "document_type" ("isactive")
-        `);
-        await queryRunner.query(`
-            CREATE TABLE "document" (
-                "id" SERIAL NOT NULL,
-                "title" character varying(255) NOT NULL,
-                "filename" character varying(255),
-                "filepath" character varying(500),
-                "scope" character varying(50) NOT NULL,
-                "employeeid" integer,
-                "documenttypeid" integer,
-                "description" text,
-                "expirationdate" TIMESTAMP,
-                "targetdepartment" character varying(100),
-                "targetbranch" character varying(100),
-                "uploadedby" character varying(100),
-                "uploadedat" TIMESTAMP,
-                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
-                "updatedby" character varying(100),
-                "isactive" boolean NOT NULL DEFAULT true,
-                CONSTRAINT "UQ_39d28d83a120557f479cc0fd397" UNIQUE ("title"),
-                CONSTRAINT "PK_e57d3357f83f3cdc0acffc3d777" PRIMARY KEY ("id")
-            )
-        `);
-        await queryRunner.query(`
-            CREATE INDEX "IDX_49151cf2eb8bb5f29ce3a7239e" ON "document" ("documenttypeid")
-        `);
-        await queryRunner.query(`
-            CREATE INDEX "IDX_e088d020bdf181fecaed6fc630" ON "document" ("employeeid")
-        `);
-        await queryRunner.query(`
-            CREATE INDEX "IDX_21157b2face16e00bad6a27e46" ON "document" ("scope")
-        `);
-        await queryRunner.query(`
-            CREATE INDEX "IDX_c959b2e495816ebb823345b466" ON "document" ("isactive")
         `);
         await queryRunner.query(`
             CREATE TYPE "public"."emp_gender_enum" AS ENUM('male', 'female')
@@ -893,14 +842,6 @@ export class PRODUCTIONV11761989034530 implements MigrationInterface {
             ADD CONSTRAINT "FK_778d7ec9dc1dc9250b81d1f2333" FOREIGN KEY ("employeeovementtypeid") REFERENCES "emp_movement_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
-            ALTER TABLE "document"
-            ADD CONSTRAINT "FK_e088d020bdf181fecaed6fc6304" FOREIGN KEY ("employeeid") REFERENCES "emp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
-        await queryRunner.query(`
-            ALTER TABLE "document"
-            ADD CONSTRAINT "FK_49151cf2eb8bb5f29ce3a7239e1" FOREIGN KEY ("documenttypeid") REFERENCES "document_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
-        `);
-        await queryRunner.query(`
             ALTER TABLE "emp"
             ADD CONSTRAINT "FK_84f468eb8728bafff9a6131e411" FOREIGN KEY ("branchid") REFERENCES "branch"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
@@ -1063,12 +1004,6 @@ export class PRODUCTIONV11761989034530 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "emp" DROP CONSTRAINT "FK_84f468eb8728bafff9a6131e411"
-        `);
-        await queryRunner.query(`
-            ALTER TABLE "document" DROP CONSTRAINT "FK_49151cf2eb8bb5f29ce3a7239e1"
-        `);
-        await queryRunner.query(`
-            ALTER TABLE "document" DROP CONSTRAINT "FK_e088d020bdf181fecaed6fc6304"
         `);
         await queryRunner.query(`
             ALTER TABLE "emp_movement" DROP CONSTRAINT "FK_778d7ec9dc1dc9250b81d1f2333"
@@ -1252,27 +1187,6 @@ export class PRODUCTIONV11761989034530 implements MigrationInterface {
         `);
         await queryRunner.query(`
             DROP TYPE "public"."emp_gender_enum"
-        `);
-        await queryRunner.query(`
-            DROP INDEX "public"."IDX_c959b2e495816ebb823345b466"
-        `);
-        await queryRunner.query(`
-            DROP INDEX "public"."IDX_21157b2face16e00bad6a27e46"
-        `);
-        await queryRunner.query(`
-            DROP INDEX "public"."IDX_e088d020bdf181fecaed6fc630"
-        `);
-        await queryRunner.query(`
-            DROP INDEX "public"."IDX_49151cf2eb8bb5f29ce3a7239e"
-        `);
-        await queryRunner.query(`
-            DROP TABLE "document"
-        `);
-        await queryRunner.query(`
-            DROP INDEX "public"."IDX_247f28a1e02d73a5c0e576b70a"
-        `);
-        await queryRunner.query(`
-            DROP TABLE "document_type"
         `);
         await queryRunner.query(`
             DROP INDEX "public"."IDX_f974c10798a9298f1772629477"

@@ -26,7 +26,6 @@ import { TrainingEntity } from '@features/201-files/infrastructure/database/type
 import { ReferenceEntity } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/entities/reference.entity';
 import { WorkExpEntity } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/entities/workexp.entity';
 import { EmployeeMovementEntity } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/entities/employee-movement.entity';
-import { DocumentEntity } from '@features/document-management/infrastructure/database/typeorm/postgreSQL/entities/document.entity';
 
 @Entity(CONSTANTS_DATABASE_MODELS.EMPLOYEE)
 @Index(['fname', 'mname', 'lname', 'idnumber'])
@@ -316,11 +315,4 @@ export class EmployeeEntity {
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   updatedby?: string;
-
-  /**
-   * RELATIONS
-   */
-  // One-to-many relationship with Documents
-  @OneToMany(() => DocumentEntity, (document) => document.employee)
-  documents: DocumentEntity[];
 }

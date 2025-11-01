@@ -1,4 +1,4 @@
-import { CreateEmployeeMovementTypeUseCase } from '@features/201-files/application/use-cases/employee-movement-type/employee-movement-type.use-case';
+import { CreateEmployeeMovementTypeUseCase } from '@features/201-files/application/use-cases/employee-movement-type/create-employee-movement-type.use-case';
 import { UpdateEmployeeMovementTypeUseCase } from '@features/201-files/application/use-cases/employee-movement-type/update-employee-movement-type.use-case';
 import {
   Controller,

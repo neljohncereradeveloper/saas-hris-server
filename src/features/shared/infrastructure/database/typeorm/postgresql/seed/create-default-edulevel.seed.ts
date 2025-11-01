@@ -13,43 +13,7 @@ export class SeedEduLevel {
       'elementary',
       'high school',
       'senior high school',
-
-      // Technical/Vocational
-      'technical/vocational',
-      'certificate program',
-      'diploma',
-      'associate degree',
-
-      // Higher Education
-      "bachelor's degree",
-      "master's degree",
-      'doctorate/phd',
-      'post-doctorate',
-
-      // Professional
-      'professional license',
-      'board exam passer',
-      'professional certification',
-
-      // Specialized
-      'graduate certificate',
-      'post-graduate diploma',
-      'executive education',
-      'continuing education',
-
-      // International Equivalents
-      'ged (general educational development)',
-      'international baccalaureate',
-      'a-levels',
-      'o-levels',
-
-      // Other
-      'some college',
-      'some high school',
-      'no formal education',
-      'self-taught',
-      'online education',
-      'distance learning',
+      'college',
     ];
 
     for (const eduLevel of eduLevels) {
@@ -63,9 +27,9 @@ export class SeedEduLevel {
       if (!existingEduLevel) {
         const eduLevelEntity = this.entityManager.create(EduLevelEntity, {
           desc1: eduLevel,
-          isactive: false,
-          createdby: 'system',
-          updatedby: 'system',
+          isactive: true,
+          createdby: 'auto generated',
+          updatedby: 'auto generated',
         });
 
         await this.entityManager.save(eduLevelEntity);

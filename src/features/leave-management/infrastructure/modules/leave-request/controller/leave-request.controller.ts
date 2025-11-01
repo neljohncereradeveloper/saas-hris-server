@@ -36,7 +36,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-@ApiTags('Leave-Management-Leave-Request')
+@ApiTags('Leave Request')
 @Controller(CONSTANTS_CONTROLLERS.LEAVE_REQUEST)
 export class LeaveRequestController {
   constructor(

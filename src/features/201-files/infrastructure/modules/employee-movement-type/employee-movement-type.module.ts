@@ -6,7 +6,7 @@ import { TransactionAdapter } from '@features/shared/infrastructure/database/typ
 import { ActivityLogRepositoryImpl } from '@features/shared/infrastructure/database/typeorm/postgresql/repositories/activity-log.repository.impl';
 import { ErrorHandlerService } from '@features/shared/infrastructure/services/error-handler.service';
 import { EmployeeMovementTypeRepositoryImpl } from '../../database/typeorm/postgreSQL/repositories/employee-movement-type.repository';
-import { CreateEmployeeMovementTypeUseCase } from '@features/201-files/application/use-cases/employee-movement-type/employee-movement-type.use-case';
+import { CreateEmployeeMovementTypeUseCase } from '@features/201-files/application/use-cases/employee-movement-type/create-employee-movement-type.use-case';
 import { UpdateEmployeeMovementTypeUseCase } from '@features/201-files/application/use-cases/employee-movement-type/update-employee-movement-type.use-case';
 import { SoftDeleteEmployeeMovementTypeUseCase } from '@features/201-files/application/use-cases/employee-movement-type/soft-delete-employee-movement-type.use-case';
 import { FindEmployeeMovementTypePaginatedListUseCase } from '@features/201-files/application/use-cases/employee-movement-type/find-employee-movement-type-paginated-list.use-case';

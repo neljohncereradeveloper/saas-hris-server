@@ -30,7 +30,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-@ApiTags('Leave-Management-Leave-Type')
+@ApiTags('Leave Type')
 @Controller(CONSTANTS_CONTROLLERS.LEAVETYPE)
 export class LeaveTypeController {
   constructor(

@@ -30,8 +30,8 @@ export class SeedCivilStatus {
         const civilStatusEntity = this.entityManager.create(CivilStatusEntity, {
           desc1: civilStatus,
           isactive: true,
-          createdby: 'system',
-          updatedby: 'system',
+          createdby: 'auto generated',
+          updatedby: 'auto generated',
         });
 
         await this.entityManager.save(civilStatusEntity);

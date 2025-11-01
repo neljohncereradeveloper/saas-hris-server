@@ -27,8 +27,6 @@ import { TrainingEntity } from '@features/201-files/infrastructure/database/type
 import { WorkExpJobTitleEntity } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/entities/workexp-jobtitle.entity';
 import { EmployeeMovementEntity } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/entities/employee-movement.entity';
 import { EmployeeMovementTypeEntity } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/entities/employee-movement-type.entity';
-import { DocumentTypeEntity } from '@features/document-management/infrastructure/database/typeorm/postgreSQL/entities/document-type.entity';
-import { DocumentEntity } from '@features/document-management/infrastructure/database/typeorm/postgreSQL/entities/document.entity';
 import { LeavePolicyEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-policy.entity';
 import { LeaveTypeEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-type.entity';
 import { LeaveBalanceEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-balance.entity';
@@ -74,10 +72,6 @@ import { HolidayEntity } from './entities/holiday.entity';
       /** employee-movement */
       EmployeeMovementEntity,
       EmployeeMovementTypeEntity,
-
-      /** document-management */
-      DocumentTypeEntity,
-      DocumentEntity,
 
       /** leave-management */
       LeaveTypeEntity,

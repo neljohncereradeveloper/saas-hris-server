@@ -115,15 +115,12 @@ async function bootstrap() {
       'Employee movement type management endpoints',
     )
 
-    // Document Management Module
-    .addTag('Document', 'Document management endpoints')
-    .addTag('Document Type', 'Document type management endpoints')
-    .addTag('Upload', 'Upload management endpoints')
-
-    // Leave Management Module (Future)
-    // .addTag('Leave Request', 'Leave request management endpoints')
-    // .addTag('Leave Type', 'Leave type management endpoints')
-    // .addTag('Leave Balance', 'Leave balance management endpoints')
+    // Leave Management Module
+    .addTag('Leave Type', 'Leave type management endpoints')
+    .addTag('Leave Policy', 'Leave policy management endpoints')
+    .addTag('Leave Balance', 'Leave balance management endpoints')
+    .addTag('Leave Cycle', 'Leave cycle management endpoints')
+    .addTag('Leave Request', 'Leave request management endpoints')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -157,20 +154,19 @@ async function bootstrap() {
         '201-Religion',
         '201-Employee Movement',
         '201-Employee Movement Type',
-        'Document',
-        'Document Type',
-        'Upload',
+        '201-Holiday',
       ],
     },
-    // Future: Leave Management Module
-    // {
-    //   name: 'leave-management',
-    //   tags: [
-    //     'Leave Request',
-    //     'Leave Type',
-    //     'Leave Balance',
-    //   ],
-    // },
+    {
+      name: 'leave-management',
+      tags: [
+        'Leave Type',
+        'Leave Policy',
+        'Leave Balance',
+        'Leave Cycle',
+        'Leave Request',
+      ],
+    },
   ];
 
   SwaggerModule.setup('api/docs', app, document, {

@@ -18,8 +18,9 @@ export class SeedBranch {
       if (!existingBranch) {
         const branch = this.entityManager.create(BranchEntity, {
           ...branchData,
-          createdby: 'system',
-          updatedby: 'system',
+          isactive: true,
+          createdby: 'auto generated',
+          updatedby: 'auto generated',
         });
 
         await this.entityManager.save(branch);

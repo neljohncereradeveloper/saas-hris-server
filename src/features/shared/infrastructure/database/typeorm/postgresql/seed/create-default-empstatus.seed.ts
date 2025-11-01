@@ -16,11 +16,7 @@ export class SeedEmpStatus {
       'project-based',
       'part-time',
       'full-time',
-      'temporary',
-      'casual',
-      'seasonal',
       'intern',
-      'trainee',
       'on leave',
       'suspended',
       'terminated',
@@ -34,11 +30,6 @@ export class SeedEmpStatus {
       'on sick leave',
       'on vacation leave',
       'on emergency leave',
-      'on bereavement leave',
-      'on sabbatical',
-      'on military leave',
-      'on disability leave',
-      'on unpaid leave',
     ];
 
     for (const empStatus of empStatuses) {
@@ -52,9 +43,9 @@ export class SeedEmpStatus {
       if (!existingEmpStatus) {
         const empStatusEntity = this.entityManager.create(EmpStatusEntity, {
           desc1: empStatus,
-          isactive: false,
-          createdby: 'system',
-          updatedby: 'system',
+          isactive: true,
+          createdby: 'auto generated',
+          updatedby: 'auto generated',
         });
 
         await this.entityManager.save(empStatusEntity);

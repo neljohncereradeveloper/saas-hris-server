@@ -11,8 +11,6 @@ export class SeedCitizenship {
     const citizenships = [
       // Philippine Citizenship
       'filipino',
-      'dual citizen (filipino)',
-      'naturalized filipino',
       'other',
     ];
 
@@ -27,9 +25,9 @@ export class SeedCitizenship {
       if (!existingCitizenship) {
         const citizenshipEntity = this.entityManager.create(CitizenShipEntity, {
           desc1: citizenship,
-          isactive: false,
-          createdby: 'system',
-          updatedby: 'system',
+          isactive: true,
+          createdby: 'auto generated',
+          updatedby: 'auto generated',
         });
 
         await this.entityManager.save(citizenshipEntity);

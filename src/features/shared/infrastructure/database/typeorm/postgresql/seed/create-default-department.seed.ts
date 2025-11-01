@@ -22,7 +22,6 @@ export class SeedDepartment {
         designation: 'accounting department',
       },
       { code: 'mkt', desc1: 'marketing', designation: 'marketing department' },
-      { code: 'sal', desc1: 'sales', designation: 'sales department' },
       {
         code: 'adm',
         desc1: 'administration',
@@ -30,17 +29,6 @@ export class SeedDepartment {
       },
       { code: 'leg', desc1: 'legal', designation: 'legal department' },
       { code: 'aud', desc1: 'audit', designation: 'internal audit department' },
-      {
-        code: 'cus',
-        desc1: 'customer service',
-        designation: 'customer service department',
-      },
-      { code: 'sec', desc1: 'security', designation: 'security department' },
-      {
-        code: 'main',
-        desc1: 'maintenance',
-        designation: 'maintenance department',
-      },
     ];
 
     for (const deptData of departments) {
@@ -52,8 +40,8 @@ export class SeedDepartment {
         const department = this.entityManager.create(DeptEntity, {
           ...deptData,
           isactive: true,
-          createdby: 'system',
-          updatedby: 'system',
+          createdby: 'auto generated',
+          updatedby: 'auto generated',
         });
 
         await this.entityManager.save(department);

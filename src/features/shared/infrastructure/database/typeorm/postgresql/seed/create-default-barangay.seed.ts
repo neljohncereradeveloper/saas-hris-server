@@ -8,7 +8,7 @@ export class SeedBarangay {
   constructor(private readonly entityManager: EntityManager) {}
 
   async run(): Promise<void> {
-    const barangays = ['not specified', 'default'];
+    const barangays = ['default'];
 
     for (const barangay of barangays) {
       const existingBarangay = await this.entityManager.findOne(
@@ -22,8 +22,8 @@ export class SeedBarangay {
         const barangayEntity = this.entityManager.create(BarangayEntity, {
           desc1: barangay,
           isactive: true,
-          createdby: 'system',
-          updatedby: 'system',
+          createdby: 'auto generated',
+          updatedby: 'auto generated',
         });
 
         await this.entityManager.save(barangayEntity);

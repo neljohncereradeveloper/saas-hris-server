@@ -30,7 +30,7 @@ import {
   ApiBody,
 } from '@nestjs/swagger';
 
-@ApiTags('Leave-Management-Leave-Balance')
+@ApiTags('Leave Balance')
 @Controller(CONSTANTS_CONTROLLERS.LEAVE_BALANCE)
 export class LeaveBalanceController {
   constructor(

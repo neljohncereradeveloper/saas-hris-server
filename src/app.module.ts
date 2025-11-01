@@ -4,7 +4,6 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Core201FileModule } from '@features/201-files/infrastructure/modules/core.module';
 import { PostgresqlDatabaseModule } from '@features/shared/infrastructure/database/typeorm/postgresql/postgresql-database.module';
-import { CoreDocumentManagementModule } from './features/document-management/infrastructure/modules/core.module';
 import { CoreLeaveManagementModule } from './features/leave-management/infrastructure/modules/core.module';
 import { HolidayModule } from '@features/shared/infrastructure/modules/holiday/holiday.module';
 
@@ -13,7 +12,6 @@ import { HolidayModule } from '@features/shared/infrastructure/modules/holiday/h
     ConfigModule.forRoot({ isGlobal: true }),
     PostgresqlDatabaseModule,
     Core201FileModule,
-    CoreDocumentManagementModule,
     CoreLeaveManagementModule,
     HolidayModule,
   ],

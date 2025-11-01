@@ -39,8 +39,18 @@ import { WorkExpEntity } from '@features/201-files/infrastructure/database/typeo
 import { EmployeeEntity } from '../entities/employee.entity';
 import { EmployeeMovementEntity } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/entities/employee-movement.entity';
 import { EmployeeMovementTypeEntity } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/entities/employee-movement-type.entity';
-import { DocumentTypeEntity } from '@features/document-management/infrastructure/database/typeorm/postgreSQL/entities/document-type.entity';
-import { DocumentEntity } from '@features/document-management/infrastructure/database/typeorm/postgreSQL/entities/document.entity';
+import { HolidayEntity } from '../entities/holiday.entity';
+import { LeaveTypeEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-type.entity';
+import { LeavePolicyEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-policy.entity';
+import { LeaveBalanceEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-balance.entity';
+import { LeaveCycleEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-cycle.entity';
+import { LeaveRequestEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-request.entity';
+import { LeaveTransactionEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-transaction.entity';
+import { SeedHoliday } from './create-default-holiday.seed';
+import { SeedCity } from './create-default-city.seed';
+import { SeedWorkExpCompany } from './create-default-workexp-company.seed';
+import { SeedWorkExpJobTitle } from './create-default-workexp-jobtitle.seed';
+import { SeedEmployeeMovementType } from './create-default-employee-movement-type.seed';
 
 // Load environment variables from .env
 dotenvConfig();
@@ -77,14 +87,18 @@ const dataSource = new DataSource({
     WorkExpJobTitleEntity,
     WorkExpEntity,
     EmployeeEntity,
-
     /** employee-movement */
     EmployeeMovementEntity,
     EmployeeMovementTypeEntity,
-
-    /** document-management */
-    DocumentTypeEntity,
-    DocumentEntity,
+    /** leave-management */
+    LeaveTypeEntity,
+    LeavePolicyEntity,
+    LeaveBalanceEntity,
+    LeaveCycleEntity,
+    LeaveRequestEntity,
+    LeaveTransactionEntity,
+    /** shared-features */
+    HolidayEntity,
   ], // Adjust path to your compiled entities
   synchronize: false, // Avoid sync in production
   logging: process.env.DB_LOGGING === 'true',
@@ -110,16 +124,25 @@ class SeedRunner {
       const barangaySeeder = new SeedBarangay(queryRunner.manager);
       const branchSeeder = new SeedBranch(queryRunner.manager);
       const citizenshipSeeder = new SeedCitizenship(queryRunner.manager);
+      const citySeeder = new SeedCity(queryRunner.manager);
       const civilStatusSeeder = new SeedCivilStatus(queryRunner.manager);
       const departmentSeeder = new SeedDepartment(queryRunner.manager);
       const eduCourseSeeder = new SeedEduCourse(queryRunner.manager);
       const eduCourseLevelSeeder = new SeedEduCourseLevel(queryRunner.manager);
       const eduLevelSeeder = new SeedEduLevel(queryRunner.manager);
       const eduSchoolSeeder = new SeedEduSchool(queryRunner.manager);
+      const employeeMovementTypeSeeder = new SeedEmployeeMovementType(
+        queryRunner.manager,
+      );
       const empStatusSeeder = new SeedEmpStatus(queryRunner.manager);
+      const holidaySeeder = new SeedHoliday(queryRunner.manager);
       const jobTitleSeeder = new SeedJobTitle(queryRunner.manager);
       const provinceSeeder = new SeedProvince(queryRunner.manager);
       const religionSeeder = new SeedReligion(queryRunner.manager);
+      const workExpCompanySeeder = new SeedWorkExpCompany(queryRunner.manager);
+      const workExpJobTitleSeeder = new SeedWorkExpJobTitle(
+        queryRunner.manager,
+      );
 
       await barangaySeeder.run();
       console.log('Barangay Seeded');
@@ -127,6 +150,8 @@ class SeedRunner {
       console.log('Branch Seeded');
       await citizenshipSeeder.run();
       console.log('Citizenship Seeded');
+      await citySeeder.run();
+      console.log('City Seeded');
       await civilStatusSeeder.run();
       console.log('Civil Status Seeded');
       await departmentSeeder.run();
@@ -139,14 +164,22 @@ class SeedRunner {
       console.log('Education Level Seeded');
       await eduSchoolSeeder.run();
       console.log('Education School Seeded');
+      await employeeMovementTypeSeeder.run();
+      console.log('Employee Movement Type Seeded');
       await empStatusSeeder.run();
       console.log('Employee Status Seeded');
+      await holidaySeeder.run();
+      console.log('Holiday Seeded');
       await jobTitleSeeder.run();
       console.log('Job Title Seeded');
       await provinceSeeder.run();
       console.log('Province Seeded');
       await religionSeeder.run();
       console.log('Religion Seeded');
+      await workExpCompanySeeder.run();
+      console.log('Work Exp Company Seeded');
+      await workExpJobTitleSeeder.run();
+      console.log('Work Exp Job Title Seeded');
 
       // Commit the transaction if all seeds succeed
       await queryRunner.commitTransaction();
