@@ -1,0 +1,64 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class BUILD201FILESV11761907221876 implements MigrationInterface {
+    name = 'BUILD201FILESV11761907221876'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            CREATE TABLE "leave_cycle" (
+                "id" SERIAL NOT NULL,
+                "employeeid" integer NOT NULL,
+                "leavetypeid" integer NOT NULL,
+                "cyclestartyear" integer NOT NULL,
+                "cycleendyear" integer NOT NULL,
+                "totalcarried" numeric(5, 2) NOT NULL DEFAULT '0',
+                "status" character varying(20) NOT NULL,
+                "createdat" TIMESTAMP NOT NULL DEFAULT now(),
+                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
+                "createdby" character varying(100),
+                "updatedby" character varying(100),
+                "isactive" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "PK_20325087241f8f8d76e6d36aabc" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_e15ccc35cd4971c7bba70ec574" ON "leave_cycle" ("isactive")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_9c6e7ece3ee8f6542597747a82" ON "leave_cycle" ("status")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_4c53896134d47f7214269c728e" ON "leave_cycle" ("employeeid", "leavetypeid")
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_cycle"
+            ADD CONSTRAINT "FK_0bb28d0c206b5bb74697365a014" FOREIGN KEY ("employeeid") REFERENCES "emp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_cycle"
+            ADD CONSTRAINT "FK_2222e62c0d89778d7e932beab9c" FOREIGN KEY ("leavetypeid") REFERENCES "leave_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            ALTER TABLE "leave_cycle" DROP CONSTRAINT "FK_2222e62c0d89778d7e932beab9c"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_cycle" DROP CONSTRAINT "FK_0bb28d0c206b5bb74697365a014"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_4c53896134d47f7214269c728e"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_9c6e7ece3ee8f6542597747a82"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_e15ccc35cd4971c7bba70ec574"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "leave_cycle"
+        `);
+    }
+
+}

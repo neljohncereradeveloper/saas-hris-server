@@ -1,0 +1,46 @@
+@token = 
+@host = http://localhost:3090/api/v1/workexp
+
+###
+# CREATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "company": "Tech Corp",
+  "jobTitle": "Software Developer",
+  "years": "2 years"
+}
+
+###
+# UPDATE 
+PATCH  {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "company": "Tech Solutions Inc",
+  "jobTitle": "Senior Software Developer",
+  "years": "3 years"
+}
+
+###
+# GET EMPLOYEES WORK EXPERIENCE
+GET  {{host}}?employeeId=1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# ARCHIVE
+PATCH  {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE
+PATCH  {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}

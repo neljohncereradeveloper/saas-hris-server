@@ -1,0 +1,118 @@
+### Upload Image (7 days expiration)
+POST http://localhost:3000/upload/image
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="test-image.jpg"
+Content-Type: image/jpeg
+
+< ./image/jpeg/test-image.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload Contract (1 hour expiration for security)
+POST http://localhost:3000/upload/contract
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="contract"; filename="employment-contract.pdf"
+Content-Type: application/pdf
+
+< ./contracts/employment-contract.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload Public Document (30 days expiration)
+POST http://localhost:3000/upload/document
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="document"; filename="company-policy.pdf"
+Content-Type: application/pdf
+
+< ./documents/company-policy.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload File by Type (flexible endpoint)
+POST http://localhost:3000/upload/file/contract
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="nda.pdf"
+Content-Type: application/pdf
+
+< ./contracts/nda.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Upload Temporary File (15 minutes expiration)
+POST http://localhost:3000/upload/file/temporary
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="temp-report.pdf"
+Content-Type: application/pdf
+
+< ./temp/temp-report.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### Expected Responses:
+# Image Upload Response:
+# {
+#   "message": "Image uploaded successfully",
+#   "data": {
+#     "url": "http://localhost:9000/bucket/test-image.jpg",
+#     "previewUrl": "http://localhost:9000/bucket/test-image.jpg?X-Amz-Algorithm=...",
+#     "filename": "test-image.jpg",
+#     "mimetype": "image/jpeg",
+#     "size": 12345,
+#     "fileType": "image",
+#     "expiresIn": "7 days"
+#   }
+# }
+
+# Contract Upload Response:
+# {
+#   "message": "Contract uploaded successfully",
+#   "data": {
+#     "url": "http://localhost:9000/bucket/employment-contract.pdf",
+#     "contractUrl": "http://localhost:9000/bucket/employment-contract.pdf?X-Amz-Algorithm=...",
+#     "filename": "employment-contract.pdf",
+#     "mimetype": "application/pdf",
+#     "size": 45678,
+#     "fileType": "contract",
+#     "expiresIn": "1 hour",
+#     "securityNote": "This URL expires in 1 hour for security"
+#   }
+# }
+
+### Get Image via Stream (existing endpoint)
+GET http://localhost:3000/upload/image/test-image.jpg
+
+### Get Preview URL (new endpoint - for browser preview)
+GET http://localhost:3000/upload/preview/test-image.jpg
+
+### Get Download URL (new endpoint - for forced download)
+GET http://localhost:3000/upload/download/test-image.jpg
+
+### Get Contract URL (1 hour expiration for security)
+GET http://localhost:3000/upload/contract/employment-contract.pdf
+
+### Get Public Document URL (30 days expiration)
+GET http://localhost:3000/upload/public-document/company-policy.pdf
+
+### Get URL by File Type (flexible endpoint)
+GET http://localhost:3000/upload/url-by-type/contract/confidential-document.pdf
+GET http://localhost:3000/upload/url-by-type/temporary/temp-file.pdf
+GET http://localhost:3000/upload/url-by-type/public-document/public-info.pdf
+
+### Example Usage:
+# 1. Upload an image using the first endpoint
+# 2. Use the preview URL in your frontend for displaying images in browser
+# 3. Use the download URL when you want to force download
+# 4. Use contract URLs for sensitive documents (1 hour expiration)
+# 5. Use public document URLs for non-sensitive files (30 days expiration)
+# 6. Use temporary URLs for very short-lived access (15 minutes)
+
+### Security Considerations:
+# - Contracts: 1 hour expiration for maximum security
+# - Public Documents: 30 days for convenience
+# - Images: 7 days for normal usage
+# - Temporary: 15 minutes for one-time access

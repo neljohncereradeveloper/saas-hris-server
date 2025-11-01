@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "ES2021",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "paths": {
+      "@features/201-files/*": ["src/features/201-files/*"],
+      "@features/employee-movement/*": ["src/features/employee-movement/*"],
+      "@features/document-management/*": ["src/features/document-management/*"],
+      "@features/upload/*": ["src/features/upload/*"],
+      "@features/leave-management/*": ["src/features/leave-management/*"],
+      "@features/shared/*": ["src/features/shared/*"],
+      "@shared/constants/*": ["src/shared/constants/*"],
+      "@shared/interfaces/*": ["src/shared/interfaces/*"],
+      "@shared/utils/*": ["src/shared/utils/*"],
+      "@shared/enum/*": ["src/shared/enum/*"],
+      "@shared/decorator/*": ["src/shared/decorator/*"],
+      "@shared/guards/*": ["src/shared/guards/*"]
+    },
+    "incremental": true,
+    "skipLibCheck": true
+  }
+}

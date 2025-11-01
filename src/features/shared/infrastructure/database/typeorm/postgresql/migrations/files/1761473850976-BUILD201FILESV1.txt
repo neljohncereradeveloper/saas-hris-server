@@ -1,0 +1,163 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class BUILD201FILESV11761473850976 implements MigrationInterface {
+    name = 'BUILD201FILESV11761473850976'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            CREATE TABLE "leave_type" (
+                "id" SERIAL NOT NULL,
+                "name" character varying(100) NOT NULL,
+                "code" character varying(20) NOT NULL,
+                "desc1" character varying(255) NOT NULL,
+                "paid" boolean NOT NULL DEFAULT false,
+                "createdat" TIMESTAMP NOT NULL DEFAULT now(),
+                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
+                "createdby" character varying(100),
+                "updatedby" character varying(100),
+                "isactive" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "UQ_15cccf623fb57c4d4497a29549c" UNIQUE ("code"),
+                CONSTRAINT "PK_dea42866b70af67caabf936f496" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_95acf0e902a7ff4a06902ed028" ON "leave_type" ("isactive")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_15cccf623fb57c4d4497a29549" ON "leave_type" ("code")
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "leave_policy" (
+                "id" SERIAL NOT NULL,
+                "leavetypeid" integer NOT NULL,
+                "leavetype" character varying(100) NOT NULL,
+                "annualentitlement" numeric(5, 2) NOT NULL,
+                "carrylimit" numeric(5, 2) NOT NULL,
+                "encashlimit" numeric(5, 2) NOT NULL,
+                "cyclelengthyears" integer NOT NULL,
+                "effectivedate" date NOT NULL,
+                "expirydate" date NOT NULL,
+                "status" character varying(20) NOT NULL,
+                "createdat" TIMESTAMP NOT NULL DEFAULT now(),
+                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
+                "createdby" character varying(100),
+                "updatedby" character varying(100),
+                "isactive" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "PK_9d7812f2a0669f44dcf8ef62c20" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_23d33ab5d351f23bc36e94aa68" ON "leave_policy" ("isactive")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_2cc00c9ea7179c2bad43ade933" ON "leave_policy" ("status")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_c525878fdcc0284063d2142728" ON "leave_policy" ("leavetypeid", "effectivedate")
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "leave_balance" (
+                "id" SERIAL NOT NULL,
+                "employeeid" integer NOT NULL,
+                "leavetypeid" integer NOT NULL,
+                "policyid" integer NOT NULL,
+                "year" integer NOT NULL,
+                "beginningbalance" numeric(5, 2) NOT NULL,
+                "earned" numeric(5, 2) NOT NULL,
+                "used" numeric(5, 2) NOT NULL,
+                "carriedover" numeric(5, 2) NOT NULL,
+                "encashed" numeric(5, 2) NOT NULL,
+                "remaining" numeric(5, 2) NOT NULL,
+                "lasttransactiondate" date,
+                "status" character varying(20) NOT NULL,
+                "remarks" text,
+                "createdat" TIMESTAMP NOT NULL DEFAULT now(),
+                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
+                "createdby" character varying(100),
+                "updatedby" character varying(100),
+                "isactive" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "PK_3455e264c75148742540634aca2" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_2f008ea80debb29f958dc49fa2" ON "leave_balance" ("isactive")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_a4b1c40cfa10b729dfe692debd" ON "leave_balance" ("status")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_c7d93fa7642811b5e54ce14e42" ON "leave_balance" ("leavetypeid", "year")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_b2628ad6ce68ac26b717ef1cd8" ON "leave_balance" ("employeeid", "year")
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_policy"
+            ADD CONSTRAINT "FK_043a755eabe37eee0d250364763" FOREIGN KEY ("leavetypeid") REFERENCES "leave_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_balance"
+            ADD CONSTRAINT "FK_366ddeccf4731ab0fcd0b373d83" FOREIGN KEY ("employeeid") REFERENCES "emp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_balance"
+            ADD CONSTRAINT "FK_8dbacaa817c2dd3f2894e8ba425" FOREIGN KEY ("leavetypeid") REFERENCES "leave_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_balance"
+            ADD CONSTRAINT "FK_18e8a1c5f7b53b4354d5e5a881f" FOREIGN KEY ("policyid") REFERENCES "leave_policy"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            ALTER TABLE "leave_balance" DROP CONSTRAINT "FK_18e8a1c5f7b53b4354d5e5a881f"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_balance" DROP CONSTRAINT "FK_8dbacaa817c2dd3f2894e8ba425"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_balance" DROP CONSTRAINT "FK_366ddeccf4731ab0fcd0b373d83"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_policy" DROP CONSTRAINT "FK_043a755eabe37eee0d250364763"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_b2628ad6ce68ac26b717ef1cd8"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_c7d93fa7642811b5e54ce14e42"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_a4b1c40cfa10b729dfe692debd"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_2f008ea80debb29f958dc49fa2"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "leave_balance"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_c525878fdcc0284063d2142728"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_2cc00c9ea7179c2bad43ade933"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_23d33ab5d351f23bc36e94aa68"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "leave_policy"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_15cccf623fb57c4d4497a29549"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_95acf0e902a7ff4a06902ed028"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "leave_type"
+        `);
+    }
+
+}

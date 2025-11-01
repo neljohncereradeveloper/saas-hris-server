@@ -1,0 +1,100 @@
+@token = 
+@host = http://localhost:3220/api/v1/holiday
+
+###
+# CREATE HOLIDAY
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Special Non-Working Day",
+  "date": "2025-12-24",
+  "description": "Special Non-Working Day celebration"
+}
+
+###
+# CREATE HOLIDAY - WITHOUT DESCRIPTION
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Independence Day",
+  "date": "2024-06-12"
+}
+
+###
+# GET PAGINATED LIST
+GET {{host}}?term=&page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET PAGINATED LIST - WITH SEARCH TERM
+GET {{host}}?term=New Year&page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET BY ID
+GET {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET BY DATE RANGE
+GET {{host}}/date-range?startDate=2024-01-01&endDate=2024-12-31
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET BY YEAR
+GET {{host}}/year/2024
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UPDATE HOLIDAY
+PUT {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "New Year's Day Updated",
+  "date": "2024-01-01",
+  "description": "Updated New Year celebration description"
+}
+
+###
+# UPDATE HOLIDAY - PARTIAL UPDATE
+PUT {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "New Year's Day"
+}
+
+###
+# UPDATE HOLIDAY - UPDATE DATE ONLY
+PUT {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "date": "2024-01-02"
+}
+
+###
+# ARCHIVE HOLIDAY
+PATCH {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE HOLIDAY
+PATCH {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+

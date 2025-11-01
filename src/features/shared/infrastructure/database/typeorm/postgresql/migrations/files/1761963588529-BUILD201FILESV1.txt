@@ -1,0 +1,41 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class BUILD201FILESV11761963588529 implements MigrationInterface {
+    name = 'BUILD201FILESV11761963588529'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            CREATE TABLE "holiday" (
+                "id" SERIAL NOT NULL,
+                "name" character varying(100) NOT NULL,
+                "date" date NOT NULL,
+                "description" text,
+                "createdat" TIMESTAMP NOT NULL DEFAULT now(),
+                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
+                "createdby" character varying(100),
+                "updatedby" character varying(100),
+                "isactive" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "PK_3e7492c25f80418a7aad0aec053" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_97b7dca29e1cef2ac94460ca57" ON "holiday" ("isactive")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_89b26e4ed3db8895b86c8df55e" ON "holiday" ("date")
+        `);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_89b26e4ed3db8895b86c8df55e"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_97b7dca29e1cef2ac94460ca57"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "holiday"
+        `);
+    }
+
+}

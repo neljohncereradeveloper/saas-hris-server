@@ -1,0 +1,11 @@
+// domain/exceptions/domain.exception.ts
+export class DomainException extends Error {
+  constructor(
+    public readonly message: string,
+    public readonly code: string,
+    public readonly statusCode: number = 500,
+  ) {
+    super(message);
+    this.name = 'DomainException';
+  }
+}

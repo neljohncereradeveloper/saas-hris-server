@@ -1,0 +1,132 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class BUILD201FILESV11761926377566 implements MigrationInterface {
+    name = 'BUILD201FILESV11761926377566'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            CREATE TABLE "leave_request" (
+                "id" SERIAL NOT NULL,
+                "employeeid" integer NOT NULL,
+                "leavetypeid" integer NOT NULL,
+                "leavetype" character varying(100) NOT NULL,
+                "startdate" date NOT NULL,
+                "enddate" date NOT NULL,
+                "totaldays" numeric(5, 2) NOT NULL,
+                "reason" text,
+                "balanceid" integer NOT NULL,
+                "approvaldate" TIMESTAMP,
+                "approvalby" integer,
+                "remarks" text,
+                "status" character varying(20) NOT NULL,
+                "createdat" TIMESTAMP NOT NULL DEFAULT now(),
+                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
+                "createdby" character varying(100),
+                "updatedby" character varying(100),
+                "isactive" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "PK_6f6ed3822203a4e10a5753368db" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_df3b6736f0d939458fff5e6b56" ON "leave_request" ("isactive")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_4ee8adc97f34bfa2b4bda14f21" ON "leave_request" ("status")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_28683c196b08282f9d0c3217f4" ON "leave_request" ("balanceid")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_73c953be69994094a27cfd7125" ON "leave_request" ("leavetypeid")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_e55d3c88eef48a854cfe9547f7" ON "leave_request" ("employeeid")
+        `);
+        await queryRunner.query(`
+            CREATE TABLE "leave_transaction" (
+                "id" SERIAL NOT NULL,
+                "balanceid" integer NOT NULL,
+                "transactiontype" character varying(20) NOT NULL,
+                "days" numeric(5, 2) NOT NULL,
+                "remarks" text,
+                "createdat" TIMESTAMP NOT NULL DEFAULT now(),
+                "updatedat" TIMESTAMP NOT NULL DEFAULT now(),
+                "createdby" character varying(100),
+                "updatedby" character varying(100),
+                "isactive" boolean NOT NULL DEFAULT true,
+                CONSTRAINT "PK_68209d607711506ecdeb3ee415f" PRIMARY KEY ("id")
+            )
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_c76447007f86f10a9343b4b56e" ON "leave_transaction" ("isactive")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_823f03396f9512e334874ba451" ON "leave_transaction" ("transactiontype")
+        `);
+        await queryRunner.query(`
+            CREATE INDEX "IDX_1a04cbb2939be1f22569152576" ON "leave_transaction" ("balanceid")
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_request"
+            ADD CONSTRAINT "FK_e55d3c88eef48a854cfe9547f7c" FOREIGN KEY ("employeeid") REFERENCES "emp"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_request"
+            ADD CONSTRAINT "FK_73c953be69994094a27cfd71251" FOREIGN KEY ("leavetypeid") REFERENCES "leave_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_request"
+            ADD CONSTRAINT "FK_28683c196b08282f9d0c3217f4e" FOREIGN KEY ("balanceid") REFERENCES "leave_balance"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_transaction"
+            ADD CONSTRAINT "FK_1a04cbb2939be1f22569152576f" FOREIGN KEY ("balanceid") REFERENCES "leave_balance"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+        `);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            ALTER TABLE "leave_transaction" DROP CONSTRAINT "FK_1a04cbb2939be1f22569152576f"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_request" DROP CONSTRAINT "FK_28683c196b08282f9d0c3217f4e"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_request" DROP CONSTRAINT "FK_73c953be69994094a27cfd71251"
+        `);
+        await queryRunner.query(`
+            ALTER TABLE "leave_request" DROP CONSTRAINT "FK_e55d3c88eef48a854cfe9547f7c"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_1a04cbb2939be1f22569152576"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_823f03396f9512e334874ba451"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_c76447007f86f10a9343b4b56e"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "leave_transaction"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_e55d3c88eef48a854cfe9547f7"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_73c953be69994094a27cfd7125"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_28683c196b08282f9d0c3217f4"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_4ee8adc97f34bfa2b4bda14f21"
+        `);
+        await queryRunner.query(`
+            DROP INDEX "public"."IDX_df3b6736f0d939458fff5e6b56"
+        `);
+        await queryRunner.query(`
+            DROP TABLE "leave_request"
+        `);
+    }
+
+}

@@ -1,0 +1,173 @@
+### Employee Movement API Tests
+
+### Variables
+@host = http://localhost:3220/api/v1/employee-movement
+@token = 
+
+### 1. Create Employee Movement
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 37,
+  "movementType": "TRANSFER",
+  "effectiveDate": "2025-10-08",
+  "reason": "Department restructuring and promotion",
+  "newBranch": "employee movement",
+  "newDepartment": "employee movement",
+  "newJobTitle": "employee movement",
+  "newAnnualSalary": 60000.00,
+  "newMonthlySalary": 5000.00,
+  "approvedBy": "admin@company.com",
+  "approvedDate": "2025-10-08",
+  "notes": "Employee requested this transfer for career development"
+}
+
+### 2. Create Promotion Movement
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 2,
+  "movementType": "PROMOTION",
+  "effectiveDate": "2024-03-01",
+  "reason": "Outstanding performance and increased responsibilities",
+  "previousJobTitle": "Job Title 2",
+  "newJobTitle": "Job Title 3",
+  "previousAnnualSalary": 45000.00,
+  "newAnnualSalary": 55000.00,
+  "previousMonthlySalary": 3750.00,
+  "newMonthlySalary": 4583.33,
+  "approvedBy": "hr@company.com",
+  "approvedDate": "2024-02-20",
+  "notes": "Promotion based on annual performance review"
+}
+
+### 3. Create Department Change Movement
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 3,
+  "movementType": "DEPARTMENT_CHANGE",
+  "effectiveDate": "2024-04-01",
+  "reason": "Lateral move to IT department for better career alignment",
+  "previousDepartment": "Department 1",
+  "newDepartment": "Department 3",
+  "approvedBy": "manager@company.com",
+  "approvedDate": "2024-03-15",
+  "notes": "Employee has relevant IT background and skills"
+}
+
+{
+  "employeeId": 3,
+  "movementType": "DEPARTMENT_CHANGE",
+  "effectiveDate": "2024-04-01",
+  "reason": "Lateral move to IT department for better career alignment",
+  "previousDepartmentId": 1,
+  "newDepartmentId": 3,
+  "approvedBy": "manager@company.com",
+  "approvedDate": "2024-03-15",
+  "notes": "Employee has relevant IT background and skills"
+}
+
+### 4. Get Employee Movement by ID
+GET {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 5. Get All Movements for Employee
+GET {{host}}/employee/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 6. Get Paginated Movements List
+GET {{host}}?page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 7. Get Movements with Filters
+GET {{host}}?page=1&limit=10&movementType=TRANSFER&effectiveDateFrom=2024-01-01&effectiveDateTo=2024-12-31
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 8. Search Movements by Employee Name
+GET {{host}}?page=1&limit=10&searchTerm=John
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 9. Update Employee Movement
+PATCH {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Updated reason: Department restructuring and promotion with additional responsibilities",
+  "notes": "Updated notes: Employee has completed required training for new position",
+  "approvedDate": "2024-01-20"
+}
+
+### 10. Update Movement Approval
+PATCH {{host}}/2
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "approvedBy": "new-manager@company.com",
+  "approvedDate": "2024-02-25",
+  "notes": "Approval updated by new department manager"
+}
+
+### 11. Get Movements for Specific Employee with Date Range
+GET {{host}}/employee/1?effectiveDateFrom=2024-01-01&effectiveDateTo=2024-06-30
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 12. Get All Promotions
+GET {{host}}?movementType=PROMOTION&page=1&limit=20
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 13. Get All Transfers
+GET {{host}}?movementType=TRANSFER&page=1&limit=20
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 14. Get Movements with Salary Changes
+GET {{host}}?page=1&limit=10&searchTerm=salary
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}
+
+### 15. Get Recent Movements (Last 30 days)
+GET {{host}}?effectiveDateFrom=2024-01-01&page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+Authorization: Bearer {{token}}

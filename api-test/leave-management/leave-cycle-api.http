@@ -1,0 +1,74 @@
+@token = 
+@host = http://localhost:3220/api/v1/leave-cycle
+
+###
+# CREATE LEAVE CYCLE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "leaveType": "Annual Leave"
+}
+
+###
+# CREATE LEAVE CYCLE - SPECIFIC YEAR
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 4,
+  "leaveType": "Annual Leave",
+  "year": 2025
+}
+
+###
+# SETUP LEAVE CYCLES FOR ALL ACTIVE EMPLOYEES
+POST {{host}}/setup
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "year": 2025,
+  "forceRegenerate": false
+}
+
+###
+# SETUP LEAVE CYCLES - FORCE REGENERATE
+POST {{host}}/setup
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "year": 2025,
+  "forceRegenerate": true
+}
+
+###
+# SETUP LEAVE CYCLES - DEFAULT YEAR
+POST {{host}}/setup
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{}
+
+###
+# GET ALL LEAVE CYCLES BY EMPLOYEE
+GET {{host}}/employee/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET ACTIVE LEAVE CYCLE FOR EMPLOYEE AND LEAVE TYPE
+GET {{host}}/employee/1/leave-type/1/active
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# CLOSE LEAVE CYCLE
+PATCH {{host}}/1/close
+Content-Type: application/json
+Authorization: Bearer {{token}}
+

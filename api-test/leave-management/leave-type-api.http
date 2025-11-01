@@ -1,0 +1,68 @@
+@token = 
+@host = http://localhost:3220/api/v1/leave-type
+
+###
+# CREATE LEAVE TYPE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "emergency leave",
+  "code": "EL",
+  "desc1": "Annual emergency leave for employee rest and recreation",
+  "paid": false,
+  "remarks": "Emergency leave for employee rest and recreation"
+}
+
+###
+# CREATE LEAVE TYPE - UNPAID
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "unpaid leave",
+  "code": "UPL",
+  "desc1": "Unpaid leave for personal matters",
+  "paid": false,
+  "remarks": "Unpaid leave for personal matters"
+}
+
+###
+# GET PAGINATED LIST
+GET {{host}}?term=&page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET COMBOBOX
+GET {{host}}/combobox
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UPDATE LEAVE TYPE
+PUT {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "vacation leave",
+  "desc1": "Vacation leave for employee rest and recreation",
+  "paid": true,
+  "remarks": "Vacation leave for employee rest and recreation"
+}
+
+###
+# ARCHIVE LEAVE TYPE
+DELETE {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE LEAVE TYPE
+PATCH {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+

@@ -1,0 +1,48 @@
+@token = 
+@host = http://localhost:3090/api/v1/edu
+
+###
+# CREATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "school": "University of the Philippines",
+  "course": "Computer Science",
+  "level": "Bachelor's Degree",
+  "yearGraduated": "2020"
+}
+
+###
+# UPDATE 
+PATCH  {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "school": "UP Diliman",
+  "course": "BS Computer Science",
+  "level": "Bachelor's Degree",
+  "yearGraduated": "2020"
+}
+
+###
+# GET EMPLOYEES EDUCATION
+GET  {{host}}?employeeId=1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# ARCHIVE
+PATCH  {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE
+PATCH  {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}

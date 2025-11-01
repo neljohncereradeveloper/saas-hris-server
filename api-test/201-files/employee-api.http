@@ -1,0 +1,159 @@
+@token = 
+@host = http://localhost:3220/api/v1/employee
+
+###
+# CREATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "branch": "Default",
+  "citizenShip": "Filipino",
+  "jobTitle": "Software Engineer",
+  "employeeStatus": "Regular",
+  "religion": "Roman Catholic",
+  "department": "Information Technology",
+  "hireDate": "2013-01-01",
+  "endDate": null,
+  "regularizationDate": "2013-07-01",
+  "idNumber": "EMP-2013-001",
+  "bioNumber": "BIO-006",
+  "fname": "John",
+  "mname": "Michael",
+  "lname": "Doe",
+  "suffix": "Jr.",
+  "birthDate": "1990-05-15",
+  "civilStatus": "Single",
+  "age": 34,
+  "gender": "male",
+  "height": 180,
+  "weight": 75,
+  "homeAddressStreet": "123 Main Street",
+  "homeAddressCity": "Manila",
+  "homeAddressProvince": "Metro Manila",
+  "homeAddressZipCode": "1000",
+  "presentAddressStreet": null,
+  "presentAddressBarangay": null,
+  "presentAddressCity": null,
+  "presentAddressProvince": null,
+  "presentAddressZipCode": null,
+  "cellphoneNumber": "09123456789",
+  "telephoneNumber": "02-1234567",
+  "email": "john.doe@example.com",
+  "emergencyContactName": "Jane Doe",
+  "emergencyContactNumber": "09123456788",
+  "emergencyContactRelationship": "Sister",
+  "emergencyContactAddress": "789 Emergency Street, Manila",
+  "husbandOrWifeName": null,
+  "husbandOrWifeBirthDate": null,
+  "husbandOrWifeOccupation": null,
+  "numberOfChildren": 0,
+  "fathersName": "Robert Doe",
+  "fathersBirthDate": "1965-03-20",
+  "fathersOccupation": "Engineer",
+  "mothersName": "Maria Doe",
+  "mothersBirthDate": "1968-07-15",
+  "mothersOccupation": "Teacher",
+  "bankAccountNumber": "1234567890",
+  "bankAccountName": "John Michael Doe",
+  "bankName": "BDO",
+  "bankBranch": "Makati Branch",
+  "annualSalary": 600000.00,
+  "monthlySalary": 50000.00,
+  "dailyRate": 2000.00,
+  "hourlyRate": 250.00
+}
+
+###
+# UPDATE 
+PATCH  {{host}}/37
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "branch": "Default",
+  "citizenShip": "Filipino",
+  "jobTitle": "Software Engineer",
+  "employeeStatus": "Regular",
+  "religion": "Roman Catholic",
+  "department": "Information Technology",
+  "hireDate": "2024-01-01",
+  "endDate": null,
+  "regularizationDate": "2024-07-01",
+  "idNumber": "EMP-2024-001",
+  "bioNumber": "BIO-001",
+  "fname": "John",
+  "mname": "Michael",
+  "lname": "Doe",
+  "suffix": "Jr.",
+  "birthDate": "1990-05-15",
+  "civilStatus": "Single",
+  "age": 34,
+  "gender": "male",
+  "height": 175,
+  "weight": 70,
+  "homeAddressStreet": "123 Main Street",
+  "homeAddressCity": "Manila",
+  "homeAddressProvince": "Metro Manila",
+  "homeAddressZipCode": "1000",
+  "presentAddressStreet": null,
+  "presentAddressBarangay": null,
+  "presentAddressCity": null,
+  "presentAddressProvince": null,
+  "presentAddressZipCode": null,
+  "cellphoneNumber": "09123456789",
+  "telephoneNumber": "02-1234567",
+  "email": "john.doe@example.com",
+  "emergencyContactName": "Jane Doe",
+  "emergencyContactNumber": "09123456788",
+  "emergencyContactRelationship": "Sister",
+  "emergencyContactAddress": "789 Emergency Street, Manila",
+  "husbandOrWifeName": null,
+  "husbandOrWifeBirthDate": null,
+  "husbandOrWifeOccupation": null,
+  "numberOfChildren": 0,
+  "fathersName": "Robert Doe",
+  "fathersBirthDate": "1965-03-20",
+  "fathersOccupation": "Engineer",
+  "mothersName": "Maria Doe",
+  "mothersBirthDate": "1968-07-15",
+  "mothersOccupation": "Teacher",
+  "bankAccountNumber": "1234567890",
+  "bankAccountName": "John Michael Doe",
+  "bankName": "BDO",
+  "bankBranch": "Makati Branch",
+  "annualSalary": 600000.00,
+  "monthlySalary": 50000.00,
+  "dailyRate": 2000.00,
+  "hourlyRate": 250.00
+}
+
+
+###
+# GET 
+GET  {{host}}?term=doe&page=1&limit=100&employeeStatus=[]
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET BY ID
+GET  {{host}}/4
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UPDATE GOVERNMENT DETAILS
+PATCH  {{host}}/4/government-details
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "sssNo": "1234567890",
+  "tinNo": "123456789",
+  "phic": "123456789012",
+  "hdmf": "123456789012",
+  "taxExemptCode": "123456789012"
+}
+
+

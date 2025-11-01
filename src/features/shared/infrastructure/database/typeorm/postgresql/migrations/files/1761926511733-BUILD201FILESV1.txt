@@ -1,0 +1,19 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class BUILD201FILESV11761926511733 implements MigrationInterface {
+    name = 'BUILD201FILESV11761926511733'
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            ALTER TABLE "leave_request" DROP COLUMN "leavetype"
+        `);
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`
+            ALTER TABLE "leave_request"
+            ADD "leavetype" character varying(100) NOT NULL
+        `);
+    }
+
+}

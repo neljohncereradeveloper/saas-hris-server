@@ -1,0 +1,154 @@
+@token = 
+@host = http://localhost:3220/api/v1/leave-request
+
+###
+# CREATE LEAVE REQUEST
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "leaveType": "vacation leave",
+  "startDate": "2025-12-23",
+  "endDate": "2025-12-28",
+  "reason": "vacation leave for vacation"
+}
+
+###
+# CREATE LEAVE REQUEST - HALF DAY
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "leaveType": "vacation Leave",
+  "startDate": "2025-11-12",
+  "endDate": "2025-11-12",
+  "isHalfDay": true,
+  "reason": "Personal appointment"
+}
+
+###
+# CREATE LEAVE REQUEST - WITH CUSTOM TOTAL DAYS
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "leaveType": "Annual Leave",
+  "startDate": "2025-02-15",
+  "endDate": "2025-02-20",
+  "totalDays": 5.5,
+  "reason": "Extended vacation with half day"
+}
+
+###
+# UPDATE LEAVE REQUEST
+PUT {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "startDate": "2025-02-02",
+  "endDate": "2025-02-06",
+  "reason": "Updated vacation dates"
+}
+
+###
+# UPDATE LEAVE REQUEST - CHANGE LEAVE TYPE
+PUT {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "leaveType": "Sick Leave",
+  "reason": "Changed to sick leave"
+}
+
+###
+# UPDATE LEAVE REQUEST - UPDATE REASON ONLY
+PUT {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "reason": "Updated reason for leave"
+}
+
+###
+# APPROVE LEAVE REQUEST
+PATCH {{host}}/1/approve
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "approverId": 2,
+  "remarks": "Approved - team coverage confirmed"
+}
+
+###
+# APPROVE LEAVE REQUEST - WITHOUT REMARKS
+PATCH {{host}}/1/approve
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "approverId": 2
+}
+
+###
+# REJECT LEAVE REQUEST
+PATCH {{host}}/1/reject
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "approverId": 2,
+  "remarks": "Cannot approve - critical project deadline during this period"
+}
+
+###
+# CANCEL LEAVE REQUEST
+PATCH {{host}}/1/cancel?employeeId=1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET LEAVE REQUEST BY ID
+GET {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET ALL LEAVE REQUESTS BY EMPLOYEE
+GET {{host}}/employee/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET ALL PENDING LEAVE REQUESTS
+GET {{host}}/pending/list
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET PAGINATED LIST - DEFAULT
+GET {{host}}/list/paginated
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET PAGINATED LIST - WITH SEARCH TERM
+GET {{host}}/list/paginated?term=vacation&page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET PAGINATED LIST - CUSTOM PAGINATION
+GET {{host}}/list/paginated?term=&page=2&limit=20
+Content-Type: application/json
+Authorization: Bearer {{token}}
+

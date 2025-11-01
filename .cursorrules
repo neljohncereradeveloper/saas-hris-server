@@ -1,0 +1,123 @@
+# Cursor Rules
+
+This file configures how Cursor AI should interact with this codebase.
+
+## Project Structure
+
+This project follows a Clean Architecture approach combined with Vertical Slice Architecture:
+
+- `src/core/` - Core business logic and interfaces shared across features
+- `src/infrastructure/` - Cross-cutting infrastructure concerns
+- `src/shared/` - Shared utilities and common components
+- `src/features/` - Feature modules (Vertical Slices)
+- `src/lib/` - Reusable tools that can be used across multiple projects
+
+## Code Generation Guidelines
+
+When generating code, please follow these principles:
+
+1. **Respect Clean Architecture layers**:
+
+   - Domain layer has no external dependencies
+   - Application layer depends only on domain
+   - Infrastructure implements interfaces defined in domain
+   - Classes with library dependencies should only be placed in infrastructure layer
+   - @package.json includes the version of the packages used
+
+2. **Feature independence**:
+
+   - Features should be self-contained
+   - Avoid direct dependencies between features
+   - Use events or core services for cross-feature communication
+
+3. **Coding standards**:
+
+   - Use TypeScript strict mode with interfaces preferred over types
+   - Follow SOLID principles
+   - Implement proper error handling
+   - Write descriptive comments and documentation
+   - Use camelCase for variables and methods
+   - Use lowercase with dashes for directories (e.g., `product-order`)
+
+4. **Testing approach**:
+
+   - Domain logic should be thoroughly tested
+   - Use mocks for external dependencies
+   - Follow TDD where appropriate
+
+5. **Package management**:
+
+   - Use yarn for installing packages
+   - Run commands with `yarn` instead of `npm`
+
+6. **Use case abstraction**:
+
+   - Use interfaces for use cases in the application layer
+   - Implement the interface with concrete use case classes
+   - Depend on abstractions rather than concrete implementations
+   - Follow the Dependency Inversion Principle for use cases
+
+7. **NestJS best practices**:
+
+   - Use constructor injection for dependencies
+   - Implement all application logic inside services
+   - Keep controllers and gateways clean and focused
+   - Use the useClass approach for modules with configuration dependencies
+   - Place configuration-related classes in a dedicated config directory
+   - Create separate modules for external packages without native NestJS support
+   - Use services folder if there is more than one service in a module
+
+## File Organization
+
+When suggesting new files, follow the established pattern:
+
+- Place domain models in `feature/domain/models/`
+- Place interfaces in `feature/domain/ports/`
+- Place use case interfaces in `feature/application/ports/`
+- Place use case implementations in `feature/application/use-cases/`
+- Place infrastructure implementations in `feature/infrastructure/`
+- Ensure models with external library dependencies are only placed in infrastructure layer
+- Use services directory within modules that have multiple services
+
+## Commit Message Rules
+
+When creating commit messages, follow these guidelines:
+
+1. **Use a Clear and Descriptive Title**:
+
+   - Start with a concise title that summarizes the main change. Use the format `feat(scope): description` for new features.
+   - Example: `feat(use-cases): generate use case files for education level management`
+
+2. **Include the Date**:
+
+   - Always include the date of the commit in the format `Date: YYYY-MM-DD` to track when changes were made.
+
+3. **Use Bullet Points for Clarity**:
+
+   - Break down the tasks into bullet points for easy readability. Each bullet should represent a specific task or change made in the commit.
+
+4. **Be Specific About Each Task**:
+
+   - Provide a detailed explanation of the changes made, including the purpose and functionality of each file or modification.
+   - Example:
+     - `Implement create-education-level.use-case.ts for creating new education levels.`
+     - `Create update-education-level.use-case.ts for updating education levels.`
+
+5. **Highlight Abstraction and Design Principles**:
+
+   - If applicable, mention how the changes adhere to design principles such as abstraction, dependency inversion, or loose coupling.
+   - Example:
+     - `Use interfaces for use cases and repositories to promote loose coupling and adherence to the Dependency Inversion Principle.`
+
+6. **Avoid Including Tests in Feature Commits**:
+
+   - If tests are being added or modified, consider making those changes in a separate commit to keep feature commits focused on functionality.
+
+7. **Maintain Consistency**:
+
+   - Follow a consistent format for all commit messages to make it easier for team members to understand the history of changes.
+
+8. **Use Present Tense**:
+
+   - Write commit messages in the present tense to describe what the commit does.
+   - Example: `Add`, `Implement`, `Create`, `Develop`, etc.

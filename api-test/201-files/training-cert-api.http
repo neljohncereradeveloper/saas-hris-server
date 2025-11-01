@@ -1,0 +1,47 @@
+@token = 
+@host = http://localhost:3220/api/v1/training-cert
+
+###
+# CREATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "desc1": "test"
+}
+
+###
+# UPDATE 
+PATCH  {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "desc1": "test update"
+}
+
+###
+# GET 
+GET  {{host}}?term=&page=1&limit=100
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+###
+# GET COMBOBOX 
+GET  {{host}}/combobox
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# ARCHIVE
+PATCH  {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE
+PATCH  {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}

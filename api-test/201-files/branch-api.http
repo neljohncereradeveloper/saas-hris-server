@@ -1,0 +1,50 @@
+@token = 
+@host = http://localhost:3220/api/v1/branch
+
+###
+# CREATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "desc1": "test 2",
+  "brCode": "2323"
+}
+
+###
+# UPDATE 
+PATCH  {{host}}/4
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "desc1": "test update",
+  "brCode": "888"
+}
+
+###
+# GET 
+GET  {{host}}?term=&page=1&limit=100
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+###
+# GET COMBOBOX 
+GET  {{host}}/combobox
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+###
+# ARCHIVE ACTIVE
+PATCH  {{host}}/4/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE DEACTIVE
+PATCH  {{host}}/4/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}

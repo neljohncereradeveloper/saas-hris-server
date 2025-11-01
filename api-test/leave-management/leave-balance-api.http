@@ -1,0 +1,59 @@
+@token = 
+@host = http://localhost:3220/api/v1/leave-balance
+
+###
+# CREATE LEAVE BALANCE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "leaveType": "vacation leave",
+  "policyId": 1,
+  "year": 2025
+}
+
+###
+# GENERATE ANNUAL LEAVE BALANCES
+POST {{host}}/generate-annual
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "year": 2025,
+  "forceRegenerate": false
+}
+
+
+###
+# GET BALANCES BY EMPLOYEE AND YEAR
+GET {{host}}/employee/2/year/2025
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+###
+# CLOSE LEAVE BALANCE
+PATCH {{host}}/1/close
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# ARCHIVE LEAVE BALANCE
+DELETE {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE LEAVE BALANCE
+PATCH {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# RESET LEAVE BALANCES FOR YEAR
+POST {{host}}/reset/year/2024
+Content-Type: application/json
+Authorization: Bearer {{token}}
+

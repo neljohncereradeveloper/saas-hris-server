@@ -1,0 +1,47 @@
+@token = 
+@host = http://localhost:3220/api/v1/religion
+
+###
+# CREATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "desc1": "test"
+}
+
+###
+# UPDATE 
+PATCH  {{host}}/27
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "desc1": "test update"
+}
+
+###
+# GET 
+GET  {{host}}?term=test&page=1&limit=100
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+
+###
+# GET COMBOBOX 
+GET  {{host}}/combobox
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# ARCHIVE
+PATCH  {{host}}/27/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE
+PATCH  {{host}}/27/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}

@@ -1,0 +1,48 @@
+@token = 
+@host = http://localhost:3090/api/v1/training
+
+###
+# CREATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "trainingDate": "2024-01-15",
+  "empTrainingsCertificate": "AWS Certification",
+  "trainingTitle": "Cloud Computing Fundamentals",
+  "desc1": "Basic cloud computing concepts"
+}
+
+###
+# UPDATE 
+PATCH  {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "trainingDate": "2024-01-20",
+  "empTrainingsCertificate": "AWS Solutions Architect",
+  "trainingTitle": "Advanced Cloud Architecture",
+  "desc1": "Advanced cloud architecture patterns"
+}
+
+###
+# GET EMPLOYEES TRAINING
+GET  {{host}}?employeeId=1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# ARCHIVE
+PATCH  {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE
+PATCH  {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}

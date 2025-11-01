@@ -1,0 +1,48 @@
+@token = 
+@host = http://localhost:3090/api/v1/references
+
+###
+# CREATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "name": "John Doe",
+  "position": "Manager",
+  "company": "ABC Company",
+  "contactNumber": "09123456789"
+}
+
+###
+# UPDATE 
+PATCH  {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "employeeId": 1,
+  "name": "John Smith",
+  "position": "Senior Manager",
+  "company": "XYZ Corporation",
+  "contactNumber": "09987654321"
+}
+
+###
+# GET EMPLOYEES REFERENCES
+GET  {{host}}?employeeId=1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# ARCHIVE
+PATCH  {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE
+PATCH  {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}

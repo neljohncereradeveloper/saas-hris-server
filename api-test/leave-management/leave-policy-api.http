@@ -1,0 +1,90 @@
+@token = 
+@host = http://localhost:3220/api/v1/leave-policy
+
+###
+# CREATE LEAVE POLICY
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "leaveType": "Vacation Leave",
+  "annualEntitlement": 15.00,
+  "carryLimit": 5.00,
+  "encashLimit": 10.00,
+  "cycleLengthYears": 1,
+  "effectiveDate": "2025-01-01",
+  "expiryDate": "2025-12-31",
+  "remarks": "Vacation leave policy for employee rest and recreation"
+}
+
+###
+# CREATE LEAVE POLICY - SICK LEAVE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "leaveType": "Sick Leave",
+  "annualEntitlement": 10.00,
+  "carryLimit": 3.00,
+  "encashLimit": 0.00,
+  "cycleLengthYears": 1,
+  "effectiveDate": "2024-01-01",
+  "expiryDate": "2024-12-31",
+  "remarks": "Sick leave policy for employee medical needs"
+}
+
+###
+# GET PAGINATED LIST
+GET {{host}}?term=&page=1&limit=10
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET ACTIVE POLICY FOR LEAVE TYPE
+GET {{host}}/active/1?date=2025-11-26
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UPDATE LEAVE POLICY
+PUT {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "leaveType": "Vacation Leave (Updated)",
+  "annualEntitlement": 20.00,
+  "carryLimit": 7.00,
+  "encashLimit": 12.00,
+  "cycleLengthYears": 1,
+  "effectiveDate": "2025-01-01",
+  "expiryDate": "2025-12-31",
+  "remarks": "Updated vacation leave policy with increased entitlement"
+}
+
+###
+# ACTIVATE POLICY
+PATCH {{host}}/3/activate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# RETIRE POLICY
+PATCH {{host}}/1/retire
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# ARCHIVE LEAVE POLICY
+DELETE {{host}}/1/archive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UNARCHIVE LEAVE POLICY
+PATCH {{host}}/1/unarchive
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
