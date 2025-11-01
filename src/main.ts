@@ -172,7 +172,97 @@ async function bootstrap() {
   SwaggerModule.setup('api/docs', app, document, {
     swaggerOptions: {
       persistAuthorization: true,
+      filter: true,
+      tryItOutEnabled: true,
+      deepLinking: true,
+      displayRequestDuration: true,
+      docExpansion: 'none',
+      defaultModelsExpandDepth: -1,
+      defaultModelExpandDepth: 1,
+      syntaxHighlight: {
+        activate: true,
+        theme: 'agate',
+      },
     },
+    customCss: `
+      .swagger-ui .topbar { display: none; }
+      @media (max-width: 768px) {
+        .swagger-ui { font-size: 18px !important; }
+        .swagger-ui .wrapper { padding: 0 8px; }
+        .swagger-ui .scheme-container { padding: 12px 8px; }
+        .swagger-ui .info { margin: 30px 0; }
+        .swagger-ui .info .title { font-size: 32px !important; font-weight: 700; }
+        .swagger-ui .info .description,
+        .swagger-ui .info p { font-size: 18px !important; line-height: 1.7; }
+        .swagger-ui .filter-container { margin: 25px 0; }
+        .swagger-ui .filter-container label,
+        .swagger-ui .filter .label { font-size: 18px !important; font-weight: 600; }
+        .swagger-ui .opblock-tag { font-size: 22px !important; padding: 15px 8px; font-weight: 600; }
+        .swagger-ui .opblock-tag small,
+        .swagger-ui .opblock-tag-section small,
+        .swagger-ui .opblock-tag .opblock-tag-description,
+        .swagger-ui .opblock-tag span[class*="description"],
+        .swagger-ui .opblock-tag .desc,
+        .swagger-ui .opblock-tag-section .desc,
+        .swagger-ui .opblock-tag-section [class*="desc"],
+        .swagger-ui .opblock-tag .opblock-tag-no { font-size: 18px !important; font-weight: 400; line-height: 1.6; }
+        .swagger-ui .opblock { margin: 0 0 18px 0; }
+        .swagger-ui .opblock-summary { font-size: 18px !important; padding: 14px; }
+        .swagger-ui .opblock-description-wrapper { font-size: 17px !important; padding: 14px; }
+        .swagger-ui .btn { padding: 12px 20px; font-size: 18px !important; }
+        .swagger-ui .btn-clear { font-size: 18px !important; }
+        .swagger-ui label { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui h3, .swagger-ui h4, .swagger-ui h5 { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui .opblock-section-header { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui .opblock-section-header label { font-size: 19px !important; }
+        .swagger-ui .opblock-section-header h4 { font-size: 19px !important; }
+        .swagger-ui .parameter__name { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui .parameter__type { font-size: 18px !important; }
+        .swagger-ui .parameter__description { font-size: 18px !important; }
+        .swagger-ui .response-col_status { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui .response-col_description { font-size: 18px !important; }
+        .swagger-ui .response .response-col_links { font-size: 18px !important; }
+        .swagger-ui table thead th { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui table tbody td { font-size: 18px !important; }
+        .swagger-ui .model-title { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui .prop-name { font-size: 18px !important; font-weight: 600; }
+        .swagger-ui .prop-type { font-size: 18px !important; }
+        .swagger-ui table { font-size: 18px !important; }
+        .swagger-ui .table-container { font-size: 18px !important; }
+        .swagger-ui .request-body { font-size: 19px !important; }
+        .swagger-ui .request-body .request-body-title { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui .opblock-body pre { font-size: 16px !important; }
+        .swagger-ui .body-param-content-type { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui .body-param-content-type label { font-size: 19px !important; }
+        .swagger-ui .response-table thead th,
+        .swagger-ui .responses-table thead th,
+        .swagger-ui .responses-inner thead th { font-size: 19px !important; font-weight: 600; }
+        .swagger-ui .response-table tbody td,
+        .swagger-ui .responses-table tbody td,
+        .swagger-ui .responses-inner tbody td { font-size: 18px !important; }
+        .swagger-ui .response .response-col_status code { font-size: 18px !important; }
+        .swagger-ui .opblock-description { font-size: 18px !important; }
+        .swagger-ui .opblock-body { font-size: 18px !important; }
+        .swagger-ui .opblock-body .opblock-description-wrapper { font-size: 18px !important; }
+        .swagger-ui .markdown p, .swagger-ui .markdown code, .swagger-ui .markdown pre { font-size: 17px !important; }
+        .swagger-ui .scheme-container label { font-size: 19px !important; }
+        .swagger-ui .scheme-container .schemes { font-size: 18px !important; }
+        .swagger-ui .auth-container label { font-size: 19px !important; }
+        .swagger-ui .auth-btn-wrapper label { font-size: 19px !important; }
+        .swagger-ui .authorization__btn { font-size: 19px !important; }
+        .swagger-ui input[type=text],
+        .swagger-ui input[type=password],
+        .swagger-ui input[type=email],
+        .swagger-ui input[type=url],
+        .swagger-ui input[type=number],
+        .swagger-ui textarea,
+        .swagger-ui select { font-size: 18px !important; padding: 12px; }
+        .swagger-ui .response-content-type { font-size: 16px !important; }
+        .swagger-ui .info .base-url { font-size: 17px !important; }
+        .swagger-ui .info .main { font-size: 18px !important; }
+        .swagger-ui .info .version { font-size: 16px !important; }
+      }
+    `,
   });
 
   await app.listen(PORT, async () => {
