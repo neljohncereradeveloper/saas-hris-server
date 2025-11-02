@@ -14,24 +14,50 @@ import {
 } from '@features/shared/infrastructure/decorators/validation.decorator';
 
 export class UpdateEmployeeDto {
-  /** employment information */
+  // ===== REQUIRED DATE FIELDS =====
   @ApiProperty({
-    description: 'Job title of the employee',
-    example: 'Senior Software Developer',
-    minLength: 1,
-    maxLength: 255,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+    description: 'Hire date of the employee',
+    example: '2023-01-15',
+    type: 'string',
+    format: 'date',
   })
-  @RequiredStringValidation({
-    fieldName: 'Job title',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    patternMessage:
-      'Job title can only contain letters, numbers, spaces, and basic punctuation',
-    sanitize: true,
+  @Transform(({ value }) => transformDateString(value))
+  @IsNotEmpty({ message: 'Hire date is required' })
+  @IsDateStringCustom({ message: 'Hire date must be a valid date' })
+  hireDate: Date;
+
+  @ApiPropertyOptional({
+    description: 'Regularization date',
+    example: '',
+    type: 'string',
+    format: 'date',
   })
-  jobTitle: string;
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({ message: 'Regularization date must be a valid date' })
+  regularizationDate?: Date;
+
+  @ApiPropertyOptional({
+    description: 'End date of employment',
+    example: '',
+    type: 'string',
+    format: 'date',
+  })
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({ message: 'End date must be a valid date' })
+  endDate?: Date;
+
+  @ApiProperty({
+    description: 'Birth date of the employee',
+    example: '1990-05-15',
+    type: 'string',
+    format: 'date',
+  })
+  @Transform(({ value }) => transformDateString(value))
+  @IsNotEmpty({ message: 'Birth date is required' })
+  @IsDateStringCustom({ message: 'Birth date must be a valid date' })
+  birthDate: Date;
 
   @ApiProperty({
     description: 'Employee status',
@@ -52,111 +78,59 @@ export class UpdateEmployeeDto {
   employeeStatus: string;
 
   @ApiProperty({
-    description: 'Branch where employee works',
-    example: 'Main Office',
+    description: 'Job title of the employee',
+    example: 'Senior Software Developer',
     minLength: 1,
     maxLength: 255,
     pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
   })
   @RequiredStringValidation({
-    fieldName: 'Branch',
+    fieldName: 'Job title',
     minLength: 1,
     maxLength: 255,
     pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
     patternMessage:
-      'Branch can only contain letters, numbers, spaces, and basic punctuation',
+      'Job title can only contain letters, numbers, spaces, and basic punctuation',
     sanitize: true,
   })
-  branch: string;
-
-  @ApiPropertyOptional({
-    description: 'Department of the employee',
-    example: 'IT Department',
-    minLength: 1,
-    maxLength: 255,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Department',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    patternMessage:
-      'Department can only contain letters, numbers, spaces, and basic punctuation',
-    sanitize: true,
-  })
-  department?: string;
+  jobTitle: string;
 
   @ApiProperty({
-    description: 'Hire date of the employee',
-    example: '2023-01-15',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsNotEmpty({ message: 'Hire date is required' })
-  @IsDateStringCustom({ message: 'Hire date must be a valid date' })
-  hireDate: Date;
-
-  @ApiPropertyOptional({
-    description: 'End date of employment',
-    example: '2024-12-31',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsOptional()
-  @IsDateStringCustom({ message: 'End date must be a valid date' })
-  endDate?: Date;
-
-  @ApiPropertyOptional({
-    description: 'Regularization date',
-    example: '2023-07-15',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsOptional()
-  @IsDateStringCustom({ message: 'Regularization date must be a valid date' })
-  regularizationDate?: Date;
-
-  @ApiPropertyOptional({
-    description: 'Employee ID number',
-    example: 'EMP001',
+    description: 'Religion of the employee',
+    example: 'Christian',
     minLength: 1,
-    maxLength: 50,
+    maxLength: 255,
     pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
   })
-  @OptionalStringValidation({
-    fieldName: 'ID number',
+  @RequiredStringValidation({
+    fieldName: 'Religion',
     minLength: 1,
-    maxLength: 50,
+    maxLength: 255,
     pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
     patternMessage:
-      'ID number can only contain letters, numbers, spaces, and basic punctuation',
+      'Religion can only contain letters, numbers, spaces, and basic punctuation',
     sanitize: true,
   })
-  idNumber?: string;
+  religion: string;
 
-  @ApiPropertyOptional({
-    description: 'Biometric number',
-    example: 'BIO123',
+  @ApiProperty({
+    description: 'Civil status of the employee',
+    example: 'Single',
     minLength: 1,
-    maxLength: 50,
+    maxLength: 255,
     pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
   })
-  @OptionalStringValidation({
-    fieldName: 'Bio number',
+  @RequiredStringValidation({
+    fieldName: 'Civil status',
     minLength: 1,
-    maxLength: 50,
+    maxLength: 255,
     pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
     patternMessage:
-      'Bio number can only contain letters, numbers, spaces, and basic punctuation',
+      'Civil status can only contain letters, numbers, spaces, and basic punctuation',
     sanitize: true,
   })
-  bioNumber?: string;
+  civilStatus: string;
 
-  /** personal information */
   @ApiProperty({
     description: 'First name of the employee',
     example: 'John',
@@ -228,68 +202,41 @@ export class UpdateEmployeeDto {
   })
   suffix?: string;
 
-  @ApiProperty({
-    description: 'Birth date of the employee',
-    example: '1990-05-15',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsNotEmpty({ message: 'Birth date is required' })
-  @IsDateStringCustom({ message: 'Birth date must be a valid date' })
-  birthDate: Date;
-
-  @ApiProperty({
-    description: 'Religion of the employee',
-    example: 'Christian',
+  @ApiPropertyOptional({
+    description: 'Employee ID number',
+    example: 'EMP001',
     minLength: 1,
-    maxLength: 255,
+    maxLength: 50,
     pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
   })
-  @RequiredStringValidation({
-    fieldName: 'Religion',
+  @OptionalStringValidation({
+    fieldName: 'ID number',
     minLength: 1,
-    maxLength: 255,
+    maxLength: 50,
     pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
     patternMessage:
-      'Religion can only contain letters, numbers, spaces, and basic punctuation',
+      'ID number can only contain letters, numbers, spaces, and basic punctuation',
     sanitize: true,
   })
-  religion: string;
-
-  @ApiProperty({
-    description: 'Civil status of the employee',
-    example: 'Single',
-    minLength: 1,
-    maxLength: 255,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @RequiredStringValidation({
-    fieldName: 'Civil status',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    patternMessage:
-      'Civil status can only contain letters, numbers, spaces, and basic punctuation',
-    sanitize: true,
-  })
-  civilStatus: string;
+  idNumber?: string;
 
   @ApiPropertyOptional({
-    description: 'Age of the employee',
-    example: 30,
-    minimum: 0,
-    maximum: 150,
+    description: 'Biometric number',
+    example: 'BIO123',
+    minLength: 1,
+    maxLength: 50,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
   })
-  @OptionalNumberValidation({
-    fieldName: 'Age',
-    min: 0,
-    max: 150,
-    allowZero: true,
-    allowNegative: false,
-    transform: true,
+  @OptionalStringValidation({
+    fieldName: 'Bio number',
+    minLength: 1,
+    maxLength: 50,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    patternMessage:
+      'Bio number can only contain letters, numbers, spaces, and basic punctuation',
+    sanitize: true,
   })
-  age?: number;
+  bioNumber?: string;
 
   @ApiPropertyOptional({
     description: 'Gender of the employee',
@@ -329,6 +276,58 @@ export class UpdateEmployeeDto {
   })
   citizenShip?: string;
 
+  @ApiProperty({
+    description: 'Branch where employee works',
+    example: 'Main Office',
+    minLength: 1,
+    maxLength: 255,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @RequiredStringValidation({
+    fieldName: 'Branch',
+    minLength: 1,
+    maxLength: 255,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    patternMessage:
+      'Branch can only contain letters, numbers, spaces, and basic punctuation',
+    sanitize: true,
+  })
+  branch: string;
+
+  @ApiPropertyOptional({
+    description: 'Department of the employee',
+    example: 'IT Department',
+    minLength: 1,
+    maxLength: 255,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Department',
+    minLength: 1,
+    maxLength: 255,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    patternMessage:
+      'Department can only contain letters, numbers, spaces, and basic punctuation',
+    sanitize: true,
+  })
+  department?: string;
+
+  @ApiPropertyOptional({
+    description: 'Age of the employee',
+    example: 30,
+    minimum: 0,
+    maximum: 150,
+  })
+  @OptionalNumberValidation({
+    fieldName: 'Age',
+    min: 0,
+    max: 150,
+    allowZero: true,
+    allowNegative: false,
+    transform: true,
+  })
+  age?: number;
+
   @ApiPropertyOptional({
     description: 'Height in centimeters',
     example: 175.5,
@@ -361,7 +360,60 @@ export class UpdateEmployeeDto {
   })
   weight?: number;
 
-  /** address information */
+  @ApiPropertyOptional({
+    description: 'Cellphone number',
+    example: '09123456789',
+    minLength: 10,
+    maxLength: 15,
+    pattern: '^[0-9+\\-\\s()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Cellphone number',
+    minLength: 10,
+    maxLength: 15,
+    pattern: /^[0-9+\-\s()]+$/,
+    patternMessage:
+      'Cellphone number can only contain numbers, plus signs, hyphens, spaces, and parentheses',
+    sanitize: true,
+  })
+  cellphoneNumber?: string;
+
+  @ApiPropertyOptional({
+    description: 'Telephone number',
+    example: '02-1234567',
+    minLength: 7,
+    maxLength: 15,
+    pattern: '^[0-9+\\-\\s()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Telephone number',
+    minLength: 7,
+    maxLength: 15,
+    pattern: /^[0-9+\-\s()]+$/,
+    patternMessage:
+      'Telephone number can only contain numbers, plus signs, hyphens, spaces, and parentheses',
+    sanitize: true,
+  })
+  telephoneNumber?: string;
+
+  @ApiPropertyOptional({
+    description: 'Email address',
+    example: 'john.doe@example.com',
+    minLength: 1,
+    maxLength: 255,
+    pattern: '^[\\w\\-\\.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Email',
+    minLength: 1,
+    maxLength: 255,
+    pattern: /^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$/,
+    patternMessage: 'Email must be a valid email address',
+    sanitize: true,
+  })
+  @IsEmail({}, { message: 'Email must be a valid email address' })
+  email?: string;
+
   @ApiProperty({
     description: 'Home address street',
     example: '123 Main Street',
@@ -435,7 +487,42 @@ export class UpdateEmployeeDto {
   homeAddressZipCode: string;
 
   @ApiPropertyOptional({
-    description: 'Present address street',
+    description: 'Spouse birth date',
+    example: '1992-03-20',
+    type: 'string',
+    format: 'date',
+  })
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({
+    message: 'Husband or wife birth date must be a valid date',
+  })
+  husbandOrWifeBirthDate?: Date;
+
+  @ApiPropertyOptional({
+    description: 'Father birth date',
+    example: '1965-03-20',
+    type: 'string',
+    format: 'date',
+  })
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({ message: 'Fathers birth date must be a valid date' })
+  fathersBirthDate?: Date;
+
+  @ApiPropertyOptional({
+    description: 'Mother birth date',
+    example: '1968-07-15',
+    type: 'string',
+    format: 'date',
+  })
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({ message: 'Mothers birth date must be a valid date' })
+  mothersBirthDate?: Date;
+
+  @ApiPropertyOptional({
+    description: 'Present address street (if different from home address)',
     example: '456 Business Avenue',
     minLength: 1,
     maxLength: 255,
@@ -471,7 +558,7 @@ export class UpdateEmployeeDto {
   presentAddressBarangay?: string;
 
   @ApiPropertyOptional({
-    description: 'Present address city',
+    description: 'Present address city (if different from home address)',
     example: 'Quezon City',
     minLength: 1,
     maxLength: 255,
@@ -489,7 +576,7 @@ export class UpdateEmployeeDto {
   presentAddressCity?: string;
 
   @ApiPropertyOptional({
-    description: 'Present address province',
+    description: 'Present address province (if different from home address)',
     example: 'Metro Manila',
     minLength: 1,
     maxLength: 255,
@@ -507,7 +594,7 @@ export class UpdateEmployeeDto {
   presentAddressProvince?: string;
 
   @ApiPropertyOptional({
-    description: 'Present address zip code',
+    description: 'Present address zip code (if different from home address)',
     example: '1100',
     minLength: 1,
     maxLength: 20,
@@ -524,62 +611,6 @@ export class UpdateEmployeeDto {
   })
   presentAddressZipCode?: string;
 
-  /** contact information */
-  @ApiPropertyOptional({
-    description: 'Cellphone number',
-    example: '09123456789',
-    minLength: 10,
-    maxLength: 15,
-    pattern: '^[0-9+\\-\\s()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Cellphone number',
-    minLength: 10,
-    maxLength: 15,
-    pattern: /^[0-9+\-\s()]+$/,
-    patternMessage:
-      'Cellphone number can only contain numbers, plus signs, hyphens, spaces, and parentheses',
-    sanitize: true,
-  })
-  cellphoneNumber?: string;
-
-  @ApiPropertyOptional({
-    description: 'Telephone number',
-    example: '02-1234567',
-    minLength: 7,
-    maxLength: 15,
-    pattern: '^[0-9+\\-\\s()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Telephone number',
-    minLength: 7,
-    maxLength: 15,
-    pattern: /^[0-9+\-\s()]+$/,
-    patternMessage:
-      'Telephone number can only contain numbers, plus signs, hyphens, spaces, and parentheses',
-    sanitize: true,
-  })
-  telephoneNumber?: string;
-
-  @ApiPropertyOptional({
-    description: 'Email address',
-    example: 'john.doe@example.com',
-    minLength: 1,
-    maxLength: 255,
-    pattern: '^[\\w\\-\\.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Email',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$/,
-    patternMessage: 'Email must be a valid email address',
-    sanitize: true,
-  })
-  @IsEmail({}, { message: 'Email must be a valid email address' })
-  email?: string;
-
-  /** emergency contact information */
   @ApiPropertyOptional({
     description: 'Emergency contact name',
     example: 'Jane Doe',
@@ -652,7 +683,6 @@ export class UpdateEmployeeDto {
   })
   emergencyContactAddress?: string;
 
-  /** family information */
   @ApiPropertyOptional({
     description: 'Spouse name',
     example: 'Jane Doe',
@@ -670,19 +700,6 @@ export class UpdateEmployeeDto {
     sanitize: true,
   })
   husbandOrWifeName?: string;
-
-  @ApiPropertyOptional({
-    description: 'Spouse birth date',
-    example: '1992-03-20',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsOptional()
-  @IsDateStringCustom({
-    message: 'Husband or wife birth date must be a valid date',
-  })
-  husbandOrWifeBirthDate?: Date;
 
   @ApiPropertyOptional({
     description: 'Spouse occupation',
@@ -737,17 +754,6 @@ export class UpdateEmployeeDto {
   fathersName?: string;
 
   @ApiPropertyOptional({
-    description: 'Father birth date',
-    example: '1965-03-20',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsOptional()
-  @IsDateStringCustom({ message: 'Fathers birth date must be a valid date' })
-  fathersBirthDate?: Date;
-
-  @ApiPropertyOptional({
     description: 'Father occupation',
     example: 'Engineer',
     minLength: 1,
@@ -784,17 +790,6 @@ export class UpdateEmployeeDto {
   mothersName?: string;
 
   @ApiPropertyOptional({
-    description: 'Mother birth date',
-    example: '1968-07-15',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsOptional()
-  @IsDateStringCustom({ message: 'Mothers birth date must be a valid date' })
-  mothersBirthDate?: Date;
-
-  @ApiPropertyOptional({
     description: 'Mother occupation',
     example: 'Teacher',
     minLength: 1,
@@ -812,7 +807,6 @@ export class UpdateEmployeeDto {
   })
   mothersOccupation?: string;
 
-  /** bank account information */
   @ApiPropertyOptional({
     description: 'Bank account number',
     example: '1234567890',
@@ -885,10 +879,9 @@ export class UpdateEmployeeDto {
   })
   bankBranch?: string;
 
-  /** salary information */
   @ApiPropertyOptional({
     description: 'Annual salary in PHP',
-    example: 600000,
+    example: 0,
     minimum: 0,
   })
   @OptionalDecimalValidation({
@@ -903,7 +896,7 @@ export class UpdateEmployeeDto {
 
   @ApiPropertyOptional({
     description: 'Monthly salary in PHP',
-    example: 50000,
+    example: 0,
     minimum: 0,
   })
   @OptionalDecimalValidation({
@@ -918,7 +911,7 @@ export class UpdateEmployeeDto {
 
   @ApiPropertyOptional({
     description: 'Daily rate in PHP',
-    example: 2000,
+    example: 0,
     minimum: 0,
   })
   @OptionalDecimalValidation({
@@ -933,7 +926,7 @@ export class UpdateEmployeeDto {
 
   @ApiPropertyOptional({
     description: 'Hourly rate in PHP',
-    example: 250,
+    example: 0,
     minimum: 0,
   })
   @OptionalDecimalValidation({

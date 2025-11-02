@@ -37,6 +37,28 @@ export class CreateEmployeeDto {
   @IsDateStringCustom({ message: 'Hire date must be a valid date' })
   hireDate: Date;
 
+  @ApiPropertyOptional({
+    description: 'Regularization date',
+    example: '',
+    type: 'string',
+    format: 'date',
+  })
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({ message: 'Regularization date must be a valid date' })
+  regularizationDate?: Date;
+
+  @ApiPropertyOptional({
+    description: 'End date of employment',
+    example: '',
+    type: 'string',
+    format: 'date',
+  })
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({ message: 'End date must be a valid date' })
+  endDate?: Date;
+
   @ApiProperty({
     description: 'Birth date of the employee',
     example: '1990-05-15',
@@ -47,23 +69,6 @@ export class CreateEmployeeDto {
   @IsNotEmpty({ message: 'Birth date is required' })
   @IsDateStringCustom({ message: 'Birth date must be a valid date' })
   birthDate: Date;
-
-  // ===== REQUIRED NON-DATE FIELDS =====
-  @ApiProperty({
-    description: 'Job title of the employee',
-    example: 'Software Engineer',
-    minLength: 1,
-    maxLength: 255,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @RequiredStringValidation({
-    fieldName: 'Job title',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    sanitize: true,
-  })
-  jobTitle: string;
 
   @ApiProperty({
     description: 'Employee status',
@@ -82,52 +87,20 @@ export class CreateEmployeeDto {
   employeeStatus: string;
 
   @ApiProperty({
-    description: 'Branch where employee works',
-    example: 'Default',
+    description: 'Job title of the employee',
+    example: 'Software Engineer',
     minLength: 1,
-    maxLength: 100,
+    maxLength: 255,
     pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
   })
   @RequiredStringValidation({
-    fieldName: 'Branch',
+    fieldName: 'Job title',
     minLength: 1,
-    maxLength: 100,
+    maxLength: 255,
     pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
     sanitize: true,
   })
-  branch: string;
-
-  @ApiProperty({
-    description: 'First name of the employee',
-    example: 'John',
-    minLength: 1,
-    maxLength: 50,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @RequiredStringValidation({
-    fieldName: 'First name',
-    minLength: 1,
-    maxLength: 50,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    sanitize: true,
-  })
-  fname: string;
-
-  @ApiProperty({
-    description: 'Last name of the employee',
-    example: 'Doe',
-    minLength: 1,
-    maxLength: 50,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @RequiredStringValidation({
-    fieldName: 'Last name',
-    minLength: 1,
-    maxLength: 50,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    sanitize: true,
-  })
-  lname: string;
+  jobTitle: string;
 
   @ApiProperty({
     description: 'Religion of the employee',
@@ -160,6 +133,279 @@ export class CreateEmployeeDto {
     sanitize: true,
   })
   civilStatus: string;
+
+  @ApiProperty({
+    description: 'First name of the employee',
+    example: 'John',
+    minLength: 1,
+    maxLength: 50,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @RequiredStringValidation({
+    fieldName: 'First name',
+    minLength: 1,
+    maxLength: 50,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    sanitize: true,
+  })
+  fname: string;
+
+  @ApiPropertyOptional({
+    description: 'Middle name of the employee',
+    example: 'Michael',
+    minLength: 1,
+    maxLength: 100,
+    pattern: "^[a-zA-Z\\s\\-'.,]+$",
+  })
+  @OptionalStringValidation({
+    fieldName: 'Middle name',
+    minLength: 1,
+    maxLength: 100,
+    pattern: /^[a-zA-Z\s\-'.,]+$/,
+    patternMessage:
+      'Middle name can only contain letters, spaces, hyphens, apostrophes, and periods',
+    sanitize: true,
+  })
+  mname?: string;
+
+  @ApiProperty({
+    description: 'Last name of the employee',
+    example: 'Doe',
+    minLength: 1,
+    maxLength: 50,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @RequiredStringValidation({
+    fieldName: 'Last name',
+    minLength: 1,
+    maxLength: 50,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    sanitize: true,
+  })
+  lname: string;
+
+  @ApiPropertyOptional({
+    description: 'Name suffix',
+    example: 'Jr.',
+    minLength: 1,
+    maxLength: 10,
+    pattern: '^[a-zA-Z.]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Suffix',
+    minLength: 1,
+    maxLength: 10,
+    pattern: /^[a-zA-Z.]+$/,
+    patternMessage: 'Suffix can only contain letters and periods',
+    sanitize: true,
+  })
+  suffix?: string;
+
+  @ApiPropertyOptional({
+    description: 'Employee ID number',
+    example: 'EMP-2024-001',
+    minLength: 1,
+    maxLength: 20,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Employee ID number',
+    minLength: 1,
+    maxLength: 20,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    sanitize: true,
+  })
+  idNumber?: string;
+
+  @ApiPropertyOptional({
+    description: 'Biometric number',
+    example: 'BIO-001',
+    minLength: 1,
+    maxLength: 50,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Bio number',
+    minLength: 1,
+    maxLength: 50,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    patternMessage:
+      'Bio number can only contain letters, numbers, spaces, and basic punctuation',
+    sanitize: true,
+  })
+  bioNumber?: string;
+
+  @ApiPropertyOptional({
+    description: 'Gender of the employee',
+    example: 'male',
+    enum: GenderEnum,
+    minLength: 1,
+    maxLength: 255,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Gender',
+    minLength: 1,
+    maxLength: 255,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    patternMessage:
+      'Gender can only contain letters, numbers, spaces, and basic punctuation',
+    sanitize: true,
+  })
+  @IsEnum(GenderEnum, { message: 'Gender must be a valid gender' })
+  gender?: string;
+
+  @ApiPropertyOptional({
+    description: 'Citizenship of the employee',
+    example: 'Filipino',
+    minLength: 1,
+    maxLength: 255,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Citizenship',
+    minLength: 1,
+    maxLength: 255,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    patternMessage:
+      'Citizenship can only contain letters, numbers, spaces, and basic punctuation',
+    sanitize: true,
+  })
+  citizenShip?: string;
+
+  @ApiProperty({
+    description: 'Branch where employee works',
+    example: 'Default',
+    minLength: 1,
+    maxLength: 100,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @RequiredStringValidation({
+    fieldName: 'Branch',
+    minLength: 1,
+    maxLength: 100,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    sanitize: true,
+  })
+  branch: string;
+
+  @ApiPropertyOptional({
+    description: 'Department of the employee',
+    example: 'Information Technology',
+    maxLength: 255,
+    minLength: 1,
+    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Department',
+    minLength: 1,
+    maxLength: 255,
+    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
+    sanitize: true,
+  })
+  department?: string;
+
+  @ApiPropertyOptional({
+    description: 'Age of the employee',
+    example: 34,
+    minimum: 0,
+    maximum: 150,
+  })
+  @OptionalNumberValidation({
+    fieldName: 'Age',
+    min: 0,
+    max: 150,
+    allowZero: true,
+    allowNegative: false,
+    transform: true,
+  })
+  age?: number;
+
+  @ApiPropertyOptional({
+    description: 'Height in centimeters',
+    example: 175,
+    minimum: 0,
+    maximum: 300,
+  })
+  @OptionalNumberValidation({
+    fieldName: 'Height',
+    min: 0,
+    max: 300,
+    allowZero: true,
+    allowNegative: false,
+    transform: true,
+  })
+  height?: number;
+
+  @ApiPropertyOptional({
+    description: 'Weight in kilograms',
+    example: 70,
+    minimum: 0,
+    maximum: 500,
+  })
+  @OptionalNumberValidation({
+    fieldName: 'Weight',
+    min: 0,
+    max: 500,
+    allowZero: true,
+    allowNegative: false,
+    transform: true,
+  })
+  weight?: number;
+
+  @ApiPropertyOptional({
+    description: 'Cellphone number',
+    example: '09123456789',
+    minLength: 10,
+    maxLength: 15,
+    pattern: '^[0-9+\\-\\s()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Cellphone number',
+    minLength: 10,
+    maxLength: 15,
+    pattern: /^[0-9+\-\s()]+$/,
+    patternMessage:
+      'Cellphone number can only contain numbers, plus signs, hyphens, spaces, and parentheses',
+    sanitize: true,
+  })
+  cellphoneNumber?: string;
+
+  @ApiPropertyOptional({
+    description: 'Telephone number',
+    example: '02-1234567',
+    minLength: 7,
+    maxLength: 15,
+    pattern: '^[0-9+\\-\\s()]+$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Telephone number',
+    minLength: 7,
+    maxLength: 15,
+    pattern: /^[0-9+\-\s()]+$/,
+    patternMessage:
+      'Telephone number can only contain numbers, plus signs, hyphens, spaces, and parentheses',
+    sanitize: true,
+  })
+  telephoneNumber?: string;
+
+  @ApiPropertyOptional({
+    description: 'Email address',
+    example: 'john.doe@example.com',
+    minLength: 1,
+    maxLength: 255,
+    pattern: '^[\\w\\-\\.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$',
+  })
+  @OptionalStringValidation({
+    fieldName: 'Email',
+    minLength: 1,
+    maxLength: 255,
+    pattern: /^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$/,
+    patternMessage: 'Email must be a valid email address',
+    sanitize: true,
+  })
+  @IsEmail({}, { message: 'Email must be a valid email address' })
+  email?: string;
 
   @ApiProperty({
     description: 'Home address street',
@@ -225,29 +471,6 @@ export class CreateEmployeeDto {
   })
   homeAddressZipCode: string;
 
-  // ===== OPTIONAL DATE FIELDS =====
-  @ApiPropertyOptional({
-    description: 'End date of employment',
-    example: '2024-12-31',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsOptional()
-  @IsDateStringCustom({ message: 'End date must be a valid date' })
-  endDate?: Date;
-
-  @ApiPropertyOptional({
-    description: 'Regularization date',
-    example: '2024-07-01',
-    type: 'string',
-    format: 'date',
-  })
-  @Transform(({ value }) => transformDateString(value))
-  @IsOptional()
-  @IsDateStringCustom({ message: 'Regularization date must be a valid date' })
-  regularizationDate?: Date;
-
   @ApiPropertyOptional({
     description: 'Spouse birth date',
     example: '1992-03-20',
@@ -282,178 +505,6 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsDateStringCustom({ message: 'Mothers birth date must be a valid date' })
   mothersBirthDate?: Date;
-
-  // ===== OPTIONAL NON-DATE FIELDS =====
-  @ApiPropertyOptional({
-    description: 'Department of the employee',
-    example: 'Information Technology',
-    maxLength: 255,
-    minLength: 1,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Department',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    sanitize: true,
-  })
-  department?: string;
-
-  @ApiPropertyOptional({
-    description: 'Employee ID number',
-    example: 'EMP-2024-001',
-    minLength: 1,
-    maxLength: 20,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Employee ID number',
-    minLength: 1,
-    maxLength: 20,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    sanitize: true,
-  })
-  idNumber?: string;
-
-  @ApiPropertyOptional({
-    description: 'Biometric number',
-    example: 'BIO-001',
-    minLength: 1,
-    maxLength: 50,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Bio number',
-    minLength: 1,
-    maxLength: 50,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    patternMessage:
-      'Bio number can only contain letters, numbers, spaces, and basic punctuation',
-    sanitize: true,
-  })
-  bioNumber?: string;
-
-  @ApiPropertyOptional({
-    description: 'Middle name of the employee',
-    example: 'Michael',
-    minLength: 1,
-    maxLength: 100,
-    pattern: "^[a-zA-Z\\s\\-'.,]+$",
-  })
-  @OptionalStringValidation({
-    fieldName: 'Middle name',
-    minLength: 1,
-    maxLength: 100,
-    pattern: /^[a-zA-Z\s\-'.,]+$/,
-    patternMessage:
-      'Middle name can only contain letters, spaces, hyphens, apostrophes, and periods',
-    sanitize: true,
-  })
-  mname?: string;
-
-  @ApiPropertyOptional({
-    description: 'Name suffix',
-    example: 'Jr.',
-    minLength: 1,
-    maxLength: 10,
-    pattern: '^[a-zA-Z.]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Suffix',
-    minLength: 1,
-    maxLength: 10,
-    pattern: /^[a-zA-Z.]+$/,
-    patternMessage: 'Suffix can only contain letters and periods',
-    sanitize: true,
-  })
-  suffix?: string;
-
-  @ApiPropertyOptional({
-    description: 'Age of the employee',
-    example: 34,
-    minimum: 0,
-    maximum: 150,
-  })
-  @OptionalNumberValidation({
-    fieldName: 'Age',
-    min: 0,
-    max: 150,
-    allowZero: true,
-    allowNegative: false,
-    transform: true,
-  })
-  age?: number;
-
-  @ApiPropertyOptional({
-    description: 'Gender of the employee',
-    example: 'male',
-    enum: GenderEnum,
-    minLength: 1,
-    maxLength: 255,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Gender',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    patternMessage:
-      'Gender can only contain letters, numbers, spaces, and basic punctuation',
-    sanitize: true,
-  })
-  @IsEnum(GenderEnum, { message: 'Gender must be a valid gender' })
-  gender?: string;
-
-  @ApiPropertyOptional({
-    description: 'Citizenship of the employee',
-    example: 'Filipino',
-    minLength: 1,
-    maxLength: 255,
-    pattern: '^[a-zA-Z0-9\\s\\-_&.,()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Citizenship',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[a-zA-Z0-9\s\-_&.,()]+$/,
-    patternMessage:
-      'Citizenship can only contain letters, numbers, spaces, and basic punctuation',
-    sanitize: true,
-  })
-  citizenShip?: string;
-
-  @ApiPropertyOptional({
-    description: 'Height in centimeters',
-    example: 175,
-    minimum: 0,
-    maximum: 300,
-  })
-  @OptionalNumberValidation({
-    fieldName: 'Height',
-    min: 0,
-    max: 300,
-    allowZero: true,
-    allowNegative: false,
-    transform: true,
-  })
-  height?: number;
-
-  @ApiPropertyOptional({
-    description: 'Weight in kilograms',
-    example: 70,
-    minimum: 0,
-    maximum: 500,
-  })
-  @OptionalNumberValidation({
-    fieldName: 'Weight',
-    min: 0,
-    max: 500,
-    allowZero: true,
-    allowNegative: false,
-    transform: true,
-  })
-  weight?: number;
 
   @ApiPropertyOptional({
     description: 'Present address street (if different from home address)',
@@ -544,60 +595,6 @@ export class CreateEmployeeDto {
     sanitize: true,
   })
   presentAddressZipCode?: string;
-
-  @ApiPropertyOptional({
-    description: 'Cellphone number',
-    example: '09123456789',
-    minLength: 10,
-    maxLength: 15,
-    pattern: '^[0-9+\\-\\s()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Cellphone number',
-    minLength: 10,
-    maxLength: 15,
-    pattern: /^[0-9+\-\s()]+$/,
-    patternMessage:
-      'Cellphone number can only contain numbers, plus signs, hyphens, spaces, and parentheses',
-    sanitize: true,
-  })
-  cellphoneNumber?: string;
-
-  @ApiPropertyOptional({
-    description: 'Telephone number',
-    example: '02-1234567',
-    minLength: 7,
-    maxLength: 15,
-    pattern: '^[0-9+\\-\\s()]+$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Telephone number',
-    minLength: 7,
-    maxLength: 15,
-    pattern: /^[0-9+\-\s()]+$/,
-    patternMessage:
-      'Telephone number can only contain numbers, plus signs, hyphens, spaces, and parentheses',
-    sanitize: true,
-  })
-  telephoneNumber?: string;
-
-  @ApiPropertyOptional({
-    description: 'Email address',
-    example: 'john.doe@example.com',
-    minLength: 1,
-    maxLength: 255,
-    pattern: '^[\\w\\-\\.]+@([\\w\\-]+\\.)+[\\w\\-]{2,4}$',
-  })
-  @OptionalStringValidation({
-    fieldName: 'Email',
-    minLength: 1,
-    maxLength: 255,
-    pattern: /^[\w\-\.]+@([\w\-]+\.)+[\w\-]{2,4}$/,
-    patternMessage: 'Email must be a valid email address',
-    sanitize: true,
-  })
-  @IsEmail({}, { message: 'Email must be a valid email address' })
-  email?: string;
 
   @ApiPropertyOptional({
     description: 'Emergency contact name',
@@ -869,7 +866,7 @@ export class CreateEmployeeDto {
 
   @ApiPropertyOptional({
     description: 'Annual salary in PHP',
-    example: 600000,
+    example: 0,
     minimum: 0,
   })
   @OptionalDecimalValidation({
@@ -884,7 +881,7 @@ export class CreateEmployeeDto {
 
   @ApiPropertyOptional({
     description: 'Monthly salary in PHP',
-    example: 50000,
+    example: 0,
     minimum: 0,
   })
   @OptionalDecimalValidation({
@@ -899,7 +896,7 @@ export class CreateEmployeeDto {
 
   @ApiPropertyOptional({
     description: 'Daily rate in PHP',
-    example: 2000,
+    example: 0,
     minimum: 0,
   })
   @OptionalDecimalValidation({
@@ -914,7 +911,7 @@ export class CreateEmployeeDto {
 
   @ApiPropertyOptional({
     description: 'Hourly rate in PHP',
-    example: 250,
+    example: 0,
     minimum: 0,
   })
   @OptionalDecimalValidation({
