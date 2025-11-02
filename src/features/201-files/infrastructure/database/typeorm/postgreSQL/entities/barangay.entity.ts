@@ -46,12 +46,12 @@ export class BarangayEntity {
    * RELATIONS
    */
   // One-to-many relationship with Employees
-  @OneToMany(() => EmployeeEntity, (employee) => employee.homeAddressBarangay)
-  employeesHomeAddressBarangay: EmployeeEntity[];
+  @OneToMany(() => EmployeeEntity, (employee) => employee.homeaddressbarangay)
+  employeeshomeaddressbarangay: EmployeeEntity[];
   // One-to-many relationship with Employees
   @OneToMany(
     () => EmployeeEntity,
-    (employee) => employee.presentAddressBarangay,
+    (employee) => employee.presentaddressbarangay,
   )
-  employeesPresentAddressBarangay: EmployeeEntity[];
+  employeespresentaddressbarangay: EmployeeEntity[];
 }

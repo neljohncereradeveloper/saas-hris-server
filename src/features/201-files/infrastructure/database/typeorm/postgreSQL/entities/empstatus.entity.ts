@@ -46,6 +46,6 @@ export class EmpStatusEntity {
    * RELATIONS
    */
   // One-to-many relationship with Employees
-  @OneToMany(() => EmployeeEntity, (employee) => employee.empStatus)
+  @OneToMany(() => EmployeeEntity, (employee) => employee.empstatus)
   employees: EmployeeEntity[];
 }

@@ -37,11 +37,12 @@ export const getTypeormConfig = (
   configService: ConfigService,
 ): TypeOrmModuleOptions => ({
   type: configService.get<'postgres'>('DB_TYPE', 'postgres'),
-  host: configService.get<string>('DB_HOST', '192.168.1.55'),
-  port: configService.get<number>('DB_PORT', 5432),
-  username: configService.get<string>('DB_USERNAME', 'admin'),
-  password: configService.get<string>('DB_PASSWORD', 'ytu55sw995rs'),
-  database: configService.get<string>('DB_DATABASE', 'hris'),
+  url: configService.get<string>('DB_URL'),
+  // host: configService.get<string>('DB_HOST', '192.168.1.55'),
+  // port: configService.get<number>('DB_PORT', 5432),
+  // username: configService.get<string>('DB_USERNAME', 'admin'),
+  // password: configService.get<string>('DB_PASSWORD', 'ytu55sw995rs'),
+  // database: configService.get<string>('DB_DATABASE', 'hris'),
   entities: [
     ActivityLogEntity,
     /** 201-files */

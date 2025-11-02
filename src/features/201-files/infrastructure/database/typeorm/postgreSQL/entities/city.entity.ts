@@ -45,9 +45,9 @@ export class CityEntity {
   /**
    * RELATIONS
    */
-  @OneToMany(() => EmployeeEntity, (employee) => employee.homeAddressCity)
-  employeesHomeAddressCity: EmployeeEntity[];
+  @OneToMany(() => EmployeeEntity, (employee) => employee.homeaddresscity)
+  employeeshomeaddresscity: EmployeeEntity[];
 
-  @OneToMany(() => EmployeeEntity, (employee) => employee.presentAddressCity)
-  employeesPresentAddressCity: EmployeeEntity[];
+  @OneToMany(() => EmployeeEntity, (employee) => employee.presentaddresscity)
+  employeespresentaddresscity: EmployeeEntity[];
 }

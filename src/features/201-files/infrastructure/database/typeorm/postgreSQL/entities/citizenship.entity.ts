@@ -46,6 +46,6 @@ export class CitizenShipEntity {
    * RELATIONS
    */
   // One-to-many relationship with Employees
-  @OneToMany(() => EmployeeEntity, (employee) => employee.citizenShip)
+  @OneToMany(() => EmployeeEntity, (employee) => employee.citizenship)
   employees: EmployeeEntity[];
 }

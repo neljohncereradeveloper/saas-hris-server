@@ -82,12 +82,9 @@ export class TrainingEntity {
    * RELATIONS
    */
   // Many-to-one relationship with TrainingCertificate
-  @ManyToOne(
-    () => TrainingCertEntity,
-    (trainingCertificate) => trainingCertificate.trainings,
-  )
+  @ManyToOne(() => TrainingCertEntity, (trainingcert) => trainingcert.trainings)
   @JoinColumn({ name: 'trainingscertid' })
-  trainingsCert: TrainingCertEntity;
+  trainingscert: TrainingCertEntity;
   // Many-to-one relationship with Employee
   @ManyToOne(() => EmployeeEntity, (employee) => employee.trainings)
   @JoinColumn({ name: 'employeeid' })

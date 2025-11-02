@@ -65,21 +65,21 @@ export class EduEntity {
    * RELATIONS
    */
   // Many-to-one relationship with EduCourse
-  @ManyToOne(() => EduCourseEntity, (eduCourse) => eduCourse.edu)
+  @ManyToOne(() => EduCourseEntity, (educourse) => educourse.edu)
   @JoinColumn({ name: 'educourseid' })
-  eduCourse: EduCourseEntity;
+  educourse: EduCourseEntity;
   // // Many-to-one relationship with EduCourseLevel
-  @ManyToOne(() => EduCourseLevelEntity, (eduCourseLevel) => eduCourseLevel.edu)
+  @ManyToOne(() => EduCourseLevelEntity, (educourselevel) => educourselevel.edu)
   @JoinColumn({ name: 'educourselevelid' })
-  eduCourseLevel: EduCourseLevelEntity;
+  educourselevel: EduCourseLevelEntity;
   // // Many-to-one relationship with EduLevel
-  @ManyToOne(() => EduLevelEntity, (eduLevel) => eduLevel.edu)
+  @ManyToOne(() => EduLevelEntity, (edulevel) => edulevel.edu)
   @JoinColumn({ name: 'edulevelid' })
-  eduLevel: EduLevelEntity;
+  edulevel: EduLevelEntity;
   // // Many-to-one relationship with EduSchool
-  @ManyToOne(() => EduSchoolEntity, (eduSchool) => eduSchool.edu)
+  @ManyToOne(() => EduSchoolEntity, (eduschool) => eduschool.edu)
   @JoinColumn({ name: 'eduschooldid' })
-  eduSchool: EduSchoolEntity;
+  eduschool: EduSchoolEntity;
   // Many-to-one relationship with Employee
   @ManyToOne(() => EmployeeEntity, (employee) => employee.edu)
   @JoinColumn({ name: 'employeeid' })

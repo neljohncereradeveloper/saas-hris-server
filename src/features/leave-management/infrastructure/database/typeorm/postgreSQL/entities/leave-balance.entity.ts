@@ -88,7 +88,7 @@ export class LeaveBalanceEntity {
   /** Leave type */
   @ManyToOne(() => LeaveTypeEntity)
   @JoinColumn({ name: 'leavetypeid' })
-  leaveType: LeaveTypeEntity;
+  leavetype: LeaveTypeEntity;
 
   /** Leave policy */
   @ManyToOne(() => LeavePolicyEntity)

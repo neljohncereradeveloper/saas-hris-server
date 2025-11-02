@@ -28,7 +28,7 @@ export class EmployeeMovementEntity {
 
   /** Employee movement type */
   @Column()
-  employeeovementtypeid: number;
+  employeemovementtypeid: number;
 
   @Column({ type: 'date' })
   effectivedate: Date;
@@ -99,14 +99,14 @@ export class EmployeeMovementEntity {
    */
 
   /** Employee */
-  @ManyToOne(() => EmployeeEntity, (employee) => employee.movements)
+  @ManyToOne(() => EmployeeEntity, (employee) => employee.employeemovements)
   @JoinColumn({ name: 'employeeid' })
   employee: EmployeeEntity;
 
   /** Previous branch */
   @ManyToOne(() => BranchEntity, { nullable: true })
   @JoinColumn({ name: 'previousbranchid' })
-  previousBranch?: BranchEntity;
+  previousbranch?: BranchEntity;
 
   /** New branch */
   @ManyToOne(() => BranchEntity, { nullable: true })
@@ -135,8 +135,8 @@ export class EmployeeMovementEntity {
 
   /** Employee movement type */
   @ManyToOne(() => EmployeeMovementTypeEntity, { nullable: true })
-  @JoinColumn({ name: 'employeeovementtypeid' })
-  employeeovementtype?: EmployeeMovementTypeEntity;
+  @JoinColumn({ name: 'employeemovementtypeid' })
+  employeemovementtype?: EmployeeMovementTypeEntity;
 
   /**
    * Audit Fields

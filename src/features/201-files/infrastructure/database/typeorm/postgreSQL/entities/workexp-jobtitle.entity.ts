@@ -46,6 +46,6 @@ export class WorkExpJobTitleEntity {
    * RELATIONS
    */
   // One-to-many relationship with WorkExp
-  @OneToMany(() => WorkExpEntity, (workExp) => workExp.workExpJobTitle)
-  workExp: WorkExpEntity[];
+  @OneToMany(() => WorkExpEntity, (workexp) => workexp.workexpjobtitle)
+  workexp: WorkExpEntity[];
 }

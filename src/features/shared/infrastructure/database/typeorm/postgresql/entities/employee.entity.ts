@@ -207,13 +207,13 @@ export class EmployeeEntity {
   @JoinColumn({ name: 'departmentid' })
   department: DeptEntity;
   /** job title */
-  @ManyToOne(() => JobTitleEntity, (jobTitle) => jobTitle.employees)
+  @ManyToOne(() => JobTitleEntity, (jobtitle) => jobtitle.employees)
   @JoinColumn({ name: 'jobtitleid' })
-  jobTitle: JobTitleEntity;
+  jobtitle: JobTitleEntity;
   /** employee status */
-  @ManyToOne(() => EmpStatusEntity, (empStatus) => empStatus.employees)
+  @ManyToOne(() => EmpStatusEntity, (empstatus) => empstatus.employees)
   @JoinColumn({ name: 'empstatusid' })
-  empStatus: EmpStatusEntity;
+  empstatus: EmpStatusEntity;
   /**
    * personal information
    */
@@ -222,13 +222,13 @@ export class EmployeeEntity {
   @JoinColumn({ name: 'religionid' })
   religion: ReligionEntity;
   /** citizen ship */
-  @ManyToOne(() => CitizenShipEntity, (civilstatus) => civilstatus.employees)
+  @ManyToOne(() => CitizenShipEntity, (citizenship) => citizenship.employees)
   @JoinColumn({ name: 'citizenshipid' })
-  citizenShip: CitizenShipEntity;
+  citizenship: CitizenShipEntity;
   /** civil status */
   @ManyToOne(() => CivilStatusEntity, (civilstatus) => civilstatus.employees)
   @JoinColumn({ name: 'civilstatusid' })
-  civilStatus: CivilStatusEntity;
+  civilstatus: CivilStatusEntity;
 
   /**
    * Address Information
@@ -239,42 +239,42 @@ export class EmployeeEntity {
   /** home address barangay */
   @ManyToOne(
     () => BarangayEntity,
-    (barangay) => barangay.employeesHomeAddressBarangay,
+    (barangay) => barangay.employeeshomeaddressbarangay,
   )
   @JoinColumn({ name: 'homeaddressbarangayid' })
-  homeAddressBarangay: BarangayEntity;
+  homeaddressbarangay: BarangayEntity;
   /** home address city */
-  @ManyToOne(() => CityEntity, (city) => city.employeesHomeAddressCity)
+  @ManyToOne(() => CityEntity, (city) => city.employeeshomeaddresscity)
   @JoinColumn({ name: 'homeaddresscityid' })
-  homeAddressCity: CityEntity;
+  homeaddresscity: CityEntity;
   /** home address province */
   @ManyToOne(
     () => ProvinceEntity,
-    (province) => province.employeesHomeAddressProvince,
+    (province) => province.employeeshomeaddressprovince,
   )
   @JoinColumn({ name: 'homeaddressprovinceid' })
-  homeAddressProvince: ProvinceEntity;
+  homeaddressprovince: ProvinceEntity;
   /**
    * Present Address
    */
   /** present address barangay */
   @ManyToOne(
     () => BarangayEntity,
-    (barangay) => barangay.employeesPresentAddressBarangay,
+    (barangay) => barangay.employeespresentaddressbarangay,
   )
   @JoinColumn({ name: 'presentaddressbarangayid' })
-  presentAddressBarangay: BarangayEntity;
+  presentaddressbarangay: BarangayEntity;
   /** present address city */
-  @ManyToOne(() => CityEntity, (city) => city.employeesPresentAddressCity)
+  @ManyToOne(() => CityEntity, (city) => city.employeespresentaddresscity)
   @JoinColumn({ name: 'presentaddresscityid' })
-  presentAddressCity: CityEntity;
+  presentaddresscity: CityEntity;
   /** present address province */
   @ManyToOne(
     () => ProvinceEntity,
-    (province) => province.employeesPresentAddressProvince,
+    (province) => province.employeespresentaddressprovince,
   )
   @JoinColumn({ name: 'presentaddressprovinceid' })
-  presentAddressProvince: ProvinceEntity;
+  presentaddressprovince: ProvinceEntity;
 
   /**
    * Education Information
@@ -294,12 +294,12 @@ export class EmployeeEntity {
   /**
    * Work Experience Information
    */
-  @OneToMany(() => WorkExpEntity, (workExp) => workExp.employees)
-  workExps: WorkExpEntity[];
+  @OneToMany(() => WorkExpEntity, (workexp) => workexp.employees)
+  workexps: WorkExpEntity[];
 
   /** Employee movements */
   @OneToMany(() => EmployeeMovementEntity, (movement) => movement.employee)
-  movements: EmployeeMovementEntity[];
+  employeemovements: EmployeeMovementEntity[];
 
   /**
    * Audit Fields

@@ -48,7 +48,7 @@ export class EmployeeMovementTypeEntity {
   // One-to-many relationship with EmployeeMovements
   @OneToMany(
     () => EmployeeMovementEntity,
-    (employeeMovement) => employeeMovement.employeeovementtype,
+    (employeemovement) => employeemovement.employeemovementtype,
   )
-  employeeMovements: EmployeeMovementEntity[];
+  employeemovements: EmployeeMovementEntity[];
 }

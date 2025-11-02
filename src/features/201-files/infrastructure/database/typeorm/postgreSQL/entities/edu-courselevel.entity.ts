@@ -47,6 +47,6 @@ export class EduCourseLevelEntity {
    * RELATIONS
    */
   // One-to-many relationship with Edu
-  @OneToMany(() => EduEntity, (education) => education.eduCourseLevel)
+  @OneToMany(() => EduEntity, (education) => education.educourselevel)
   edu: EduEntity[];
 }

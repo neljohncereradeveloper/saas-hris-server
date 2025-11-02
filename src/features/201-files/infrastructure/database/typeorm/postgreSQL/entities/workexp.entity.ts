@@ -58,15 +58,21 @@ export class WorkExpEntity {
    * RELATIONS
    */
   // Many-to-one relationship with Employee
-  @ManyToOne(() => EmployeeEntity, (employee) => employee.workExps)
+  @ManyToOne(() => EmployeeEntity, (employee) => employee.workexps)
   @JoinColumn({ name: 'employeeid' })
   employees: EmployeeEntity;
   // Many-to-one relationship with WorkExpJobTitle
-  @ManyToOne(() => WorkExpJobTitleEntity, (jobTitle) => jobTitle.workExp)
+  @ManyToOne(
+    () => WorkExpJobTitleEntity,
+    (workexpjobtitle) => workexpjobtitle.workexp,
+  )
   @JoinColumn({ name: 'workexpjobtitleid' })
-  workExpJobTitle: WorkExpJobTitleEntity;
+  workexpjobtitle: WorkExpJobTitleEntity;
   // Many-to-one relationship with WorkCompany
-  @ManyToOne(() => WorkExpCompanyEntity, (workCompany) => workCompany.workExp)
+  @ManyToOne(
+    () => WorkExpCompanyEntity,
+    (workexpcompany) => workexpcompany.workexp,
+  )
   @JoinColumn({ name: 'companyid' })
-  workExpCompany: WorkExpCompanyEntity;
+  workexpcompany: WorkExpCompanyEntity;
 }

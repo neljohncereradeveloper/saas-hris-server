@@ -45,12 +45,12 @@ export class ProvinceEntity {
    * RELATIONS
    */
   // One-to-many relationship with Employees
-  @OneToMany(() => EmployeeEntity, (employee) => employee.homeAddressProvince)
-  employeesHomeAddressProvince: EmployeeEntity[];
+  @OneToMany(() => EmployeeEntity, (employee) => employee.homeaddressprovince)
+  employeeshomeaddressprovince: EmployeeEntity[];
   // One-to-many relationship with Employees
   @OneToMany(
     () => EmployeeEntity,
-    (employee) => employee.presentAddressProvince,
+    (employee) => employee.presentaddressprovince,
   )
-  employeesPresentAddressProvince: EmployeeEntity[];
+  employeespresentaddressprovince: EmployeeEntity[];
 }

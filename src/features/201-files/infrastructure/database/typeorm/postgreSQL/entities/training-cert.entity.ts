@@ -46,6 +46,6 @@ export class TrainingCertEntity {
    * RELATIONS
    */
   // One-to-many relationship with Trainings
-  @OneToMany(() => TrainingEntity, (training) => training.trainingsCert)
+  @OneToMany(() => TrainingEntity, (training) => training.trainingscert)
   trainings: TrainingEntity[];
 }

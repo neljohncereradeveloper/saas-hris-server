@@ -24,10 +24,6 @@ export class LeavePolicyEntity {
   @Column()
   leavetypeid: number;
 
-  /** Leave type name (denormalized for quick access) */
-  @Column({ type: 'varchar', length: 100 })
-  leavetype: string;
-
   /** Annual entitlement days */
   @Column('decimal', { precision: 5, scale: 2 })
   annualentitlement: number;
@@ -67,7 +63,7 @@ export class LeavePolicyEntity {
   /** Leave type */
   @ManyToOne(() => LeaveTypeEntity)
   @JoinColumn({ name: 'leavetypeid' })
-  leavetypeRef: LeaveTypeEntity;
+  leavetype: LeaveTypeEntity;
 
   /**
    * Audit Fields
