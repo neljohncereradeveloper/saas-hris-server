@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class PRODUCTIONV11762008734476 implements MigrationInterface {
-    name = 'PRODUCTIONV11762008734476'
+export class PRODUCTIONV11762058333442 implements MigrationInterface {
+    name = 'PRODUCTIONV11762058333442'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
@@ -385,7 +385,7 @@ export class PRODUCTIONV11762008734476 implements MigrationInterface {
             CREATE TABLE "emp_movement" (
                 "id" SERIAL NOT NULL,
                 "employeeid" integer NOT NULL,
-                "employeeovementtypeid" integer NOT NULL,
+                "employeemovementtypeid" integer NOT NULL,
                 "effectivedate" date NOT NULL,
                 "reason" text,
                 "previousbranchid" integer,
@@ -596,7 +596,6 @@ export class PRODUCTIONV11762008734476 implements MigrationInterface {
             CREATE TABLE "leave_policy" (
                 "id" SERIAL NOT NULL,
                 "leavetypeid" integer NOT NULL,
-                "leavetype" character varying(100) NOT NULL,
                 "annualentitlement" numeric(5, 2) NOT NULL,
                 "carrylimit" numeric(5, 2) NOT NULL,
                 "encashlimit" numeric(5, 2) NOT NULL,
@@ -839,7 +838,7 @@ export class PRODUCTIONV11762008734476 implements MigrationInterface {
         `);
         await queryRunner.query(`
             ALTER TABLE "emp_movement"
-            ADD CONSTRAINT "FK_778d7ec9dc1dc9250b81d1f2333" FOREIGN KEY ("employeeovementtypeid") REFERENCES "emp_movement_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
+            ADD CONSTRAINT "FK_ed01a819ba40bb44ee79641e9cd" FOREIGN KEY ("employeemovementtypeid") REFERENCES "emp_movement_type"("id") ON DELETE NO ACTION ON UPDATE NO ACTION
         `);
         await queryRunner.query(`
             ALTER TABLE "emp"
@@ -1006,7 +1005,7 @@ export class PRODUCTIONV11762008734476 implements MigrationInterface {
             ALTER TABLE "emp" DROP CONSTRAINT "FK_84f468eb8728bafff9a6131e411"
         `);
         await queryRunner.query(`
-            ALTER TABLE "emp_movement" DROP CONSTRAINT "FK_778d7ec9dc1dc9250b81d1f2333"
+            ALTER TABLE "emp_movement" DROP CONSTRAINT "FK_ed01a819ba40bb44ee79641e9cd"
         `);
         await queryRunner.query(`
             ALTER TABLE "emp_movement" DROP CONSTRAINT "FK_c332fb2055fea4c61c4ec518a1a"
