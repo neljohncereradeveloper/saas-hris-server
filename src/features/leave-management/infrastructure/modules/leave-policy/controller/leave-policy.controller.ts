@@ -63,8 +63,8 @@ export class LeavePolicyController {
     // Convert string dates to Date objects
     const command = {
       ...createLeavePolicyDto,
-      effectiveDate: new Date(createLeavePolicyDto.effectiveDate),
-      expiryDate: new Date(createLeavePolicyDto.expiryDate),
+      effectiveDate: createLeavePolicyDto.effectiveDate,
+      expiryDate: createLeavePolicyDto.expiryDate,
     };
 
     return this.createLeavePolicyUseCase.execute(

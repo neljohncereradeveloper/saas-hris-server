@@ -1,7 +1,12 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { OptionalStringValidation } from '@features/shared/infrastructure/decorators/validation.decorator';
-import { IsOptional, IsDateString } from 'class-validator';
+import { IsOptional, IsDateString, IsNotEmpty } from 'class-validator';
 import { OptionalDecimalValidation } from '@features/shared/infrastructure/decorators/validation.decorator';
+import {
+  IsDateStringCustom,
+  transformDateString,
+} from '@features/shared/infrastructure/utils/date.util';
+import { Transform } from 'class-transformer';
 
 export class UpdateLeavePolicyDto {
   @ApiPropertyOptional({
@@ -87,11 +92,9 @@ export class UpdateLeavePolicyDto {
     example: '2024-01-01',
     format: 'date',
   })
+  @Transform(({ value }) => transformDateString(value))
   @IsOptional()
-  @IsDateString(
-    {},
-    { message: 'Effective date must be a valid date in ISO format' },
-  )
+  @IsDateStringCustom({ message: 'Hire date must be a valid date' })
   effectiveDate?: string;
 
   @ApiPropertyOptional({
@@ -99,12 +102,10 @@ export class UpdateLeavePolicyDto {
     example: '2024-12-31',
     format: 'date',
   })
+  @Transform(({ value }) => transformDateString(value))
   @IsOptional()
-  @IsDateString(
-    {},
-    { message: 'Expiry date must be a valid date in ISO format' },
-  )
-  expiryDate?: string;
+  @IsDateStringCustom({ message: 'Expiry date must be a valid date' })
+  expiryDate?: Date;
 
   @ApiPropertyOptional({
     description: 'Additional remarks or notes about the policy',

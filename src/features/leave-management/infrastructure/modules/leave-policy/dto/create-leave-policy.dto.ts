@@ -3,8 +3,13 @@ import {
   RequiredStringValidation,
   OptionalStringValidation,
 } from '@features/shared/infrastructure/decorators/validation.decorator';
-import { IsNotEmpty, IsDateString } from 'class-validator';
+import { IsNotEmpty, IsDateString, IsOptional } from 'class-validator';
 import { RequiredDecimalValidation } from '@features/shared/infrastructure/decorators/validation.decorator';
+import {
+  IsDateStringCustom,
+  transformDateString,
+} from '@features/shared/infrastructure/utils/date.util';
+import { Transform } from 'class-transformer';
 
 export class CreateLeavePolicyDto {
   @ApiProperty({
@@ -85,29 +90,25 @@ export class CreateLeavePolicyDto {
   })
   cycleLengthYears: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Effective date',
     example: '2024-01-01',
     format: 'date',
   })
-  @IsNotEmpty({ message: 'Effective date is required' })
-  @IsDateString(
-    {},
-    { message: 'Effective date must be a valid date in ISO format' },
-  )
-  effectiveDate: string;
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({ message: 'Effective date must be a valid date' })
+  effectiveDate?: Date;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'Expiry date',
     example: '2024-12-31',
     format: 'date',
   })
-  @IsNotEmpty({ message: 'Expiry date is required' })
-  @IsDateString(
-    {},
-    { message: 'Expiry date must be a valid date in ISO format' },
-  )
-  expiryDate: string;
+  @Transform(({ value }) => transformDateString(value))
+  @IsOptional()
+  @IsDateStringCustom({ message: 'Expiry date must be a valid date' })
+  expiryDate?: Date;
 
   @ApiPropertyOptional({
     description: 'Additional remarks or notes about the policy',

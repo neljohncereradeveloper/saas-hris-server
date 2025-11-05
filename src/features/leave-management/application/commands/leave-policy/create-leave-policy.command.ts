@@ -4,7 +4,7 @@ export class CreateLeavePolicyCommand {
   carryLimit: number;
   encashLimit: number;
   cycleLengthYears: number;
-  effectiveDate: Date;
-  expiryDate: Date;
+  effectiveDate?: Date;
+  expiryDate?: Date;
   remarks?: string;
 }

@@ -8,8 +8,8 @@ export class LeavePolicy {
   carryLimit: number; // the maximum number of days that can be carried over to the next year
   encashLimit: number; // the maximum number of days that can be encashed
   cycleLengthYears: number; // the number of years that the policy is effective
-  effectiveDate: Date; // the date from which the policy is effective
-  expiryDate: Date; // the date until which the policy is effective
+  effectiveDate?: Date; // the date from which the policy is effective
+  expiryDate?: Date; // the date until which the policy is effective
   status: EnumLeavePolicyStatus; // the status of the policy (e.g. "Active", "Inactive")
   remarks?: string; // any remarks about the policy
   isActive?: boolean; // whether the policy is active
@@ -22,8 +22,8 @@ export class LeavePolicy {
     carryLimit: number;
     encashLimit: number;
     cycleLengthYears: number;
-    effectiveDate: Date;
-    expiryDate: Date;
+    effectiveDate?: Date;
+    expiryDate?: Date;
     status: EnumLeavePolicyStatus;
     remarks?: string;
     isActive?: boolean;

@@ -41,11 +41,11 @@ export class LeavePolicyEntity {
   cyclelengthyears: number;
 
   /** Effective date */
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true })
   effectivedate: Date;
 
   /** Expiry date */
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true })
   expirydate: Date;
 
   /** Policy status */
