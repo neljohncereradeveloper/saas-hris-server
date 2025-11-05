@@ -3,7 +3,7 @@ import { EnumLeavePolicyStatus } from '../enum/leave-policy-status.enum';
 export class LeavePolicy {
   id?: number;
   leaveTypeId: number; // the type of leave (e.g. "Vacation", "Sick", "Personal")
-  leaveType: string; // the name of the leave type (e.g. "Vacation", "Sick", "Personal")
+  leaveType?: string; // the name of the leave type (e.g. "Vacation", "Sick", "Personal")
   annualEntitlement: number; // the annual entitlement of the leave type
   carryLimit: number; // the maximum number of days that can be carried over to the next year
   encashLimit: number; // the maximum number of days that can be encashed
@@ -17,7 +17,7 @@ export class LeavePolicy {
   constructor(dto: {
     id?: number;
     leaveTypeId: number;
-    leaveType: string;
+    leaveType?: string;
     annualEntitlement: number;
     carryLimit: number;
     encashLimit: number;

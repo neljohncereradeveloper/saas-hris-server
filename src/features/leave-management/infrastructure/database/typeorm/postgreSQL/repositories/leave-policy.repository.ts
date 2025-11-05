@@ -21,16 +21,15 @@ export class LeavePolicyRepositoryImpl
   ): Promise<LeavePolicy> {
     const query = `
       INSERT INTO ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} 
-        (leavetypeid, leavetype, annualentitlement, carrylimit, encashlimit, 
+        (leavetypeid, annualentitlement, carrylimit, encashlimit, 
          cyclelengthyears, effectivedate, expirydate, status, remarks)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-      RETURNING id, leavetypeid, leavetype, annualentitlement, carrylimit, encashlimit, 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      RETURNING id, leavetypeid, annualentitlement, carrylimit, encashlimit, 
                 cyclelengthyears, effectivedate::text as effectivedate, expirydate::text as expirydate, 
                 status, remarks, isactive
     `;
     const result = await manager.query(query, [
       policy.leaveTypeId,
-      policy.leaveType,
       policy.annualEntitlement,
       policy.carryLimit,
       policy.encashLimit,
@@ -45,7 +44,6 @@ export class LeavePolicyRepositoryImpl
     return new LeavePolicy({
       id: entity.id,
       leaveTypeId: entity.leavetypeid,
-      leaveType: entity.leavetype,
       annualEntitlement: parseFloat(entity.annualentitlement),
       carryLimit: parseFloat(entity.carrylimit),
       encashLimit: parseFloat(entity.encashlimit),
@@ -131,11 +129,12 @@ export class LeavePolicyRepositoryImpl
     manager: EntityManager,
   ): Promise<LeavePolicy | null> {
     const query = `
-      SELECT id, leavetypeid, leavetype, annualentitlement, carrylimit, encashlimit, 
-             cyclelengthyears, effectivedate::text as effectivedate, expirydate::text as expirydate, 
-             status, remarks, isactive
-      FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} 
-      WHERE id = $1
+      SELECT lp.id, lp.leavetypeid, lt.name as leavetype, lp.annualentitlement, lp.carrylimit, lp.encashlimit, 
+             lp.cyclelengthyears, lp.effectivedate::text as effectivedate, lp.expirydate::text as expirydate, 
+             lp.status, lp.remarks, lp.isactive
+      FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} lp
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.LEAVE_TYPE} lt ON lp.leavetypeid = lt.id
+      WHERE lp.id = $1
     `;
     const result = await manager.query(query, [id]);
 
@@ -197,12 +196,13 @@ export class LeavePolicyRepositoryImpl
     const limitParam = params.length + 1;
     const offsetParam = params.length + 2;
     const dataQuery = `
-      SELECT id, leavetypeid, leavetype, annualentitlement, carrylimit, encashlimit, 
-             cyclelengthyears, effectivedate::text as effectivedate, expirydate::text as expirydate, 
-             status, remarks, isactive
-      FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} 
+      SELECT lp.id, lp.leavetypeid, lt.name as leavetype, lp.annualentitlement, lp.carrylimit, lp.encashlimit, 
+             lp.cyclelengthyears, lp.effectivedate::text as effectivedate, lp.expirydate::text as expirydate, 
+             lp.status, lp.remarks, lp.isactive
+      FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} lp 
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.LEAVE_TYPE} lt ON lp.leavetypeid = lt.id
       ${whereClause}
-      ORDER BY leavetype ASC, effectivedate DESC 
+      ORDER BY lt.name ASC, lp.effectivedate DESC 
       LIMIT $${limitParam} OFFSET $${offsetParam}
     `;
     params.push(limit, offset);
@@ -246,12 +246,13 @@ export class LeavePolicyRepositoryImpl
 
   async retrieveActivePolicies(manager: EntityManager): Promise<LeavePolicy[]> {
     const query = `
-      SELECT id, leavetypeid, leavetype, annualentitlement, carrylimit, encashlimit, 
-             cyclelengthyears, effectivedate::text as effectivedate, expirydate::text as expirydate, 
-             status, remarks, isactive
-      FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} 
-      WHERE status = 'active' AND isactive = true
-      ORDER BY leavetype ASC, effectivedate DESC
+      SELECT lp.id, lp.leavetypeid, lt.name as leavetype, lp.annualentitlement, lp.carrylimit, lp.encashlimit, 
+             lp.cyclelengthyears, lp.effectivedate::text as effectivedate, lp.expirydate::text as expirydate, 
+             lp.status, lp.remarks, lp.isactive
+      FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} lp
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.LEAVE_TYPE} lt ON lp.leavetypeid = lt.id
+      WHERE lp.status = 'active' AND lp.isactive = true
+      ORDER BY lt.name ASC, lp.effectivedate DESC
     `;
     const result = await manager.query(query);
 
@@ -276,12 +277,13 @@ export class LeavePolicyRepositoryImpl
 
   async getActivePolicy(leaveTypeId: number): Promise<LeavePolicy | null> {
     const query = `
-      SELECT id, leavetypeid, leavetype, annualentitlement, carrylimit, encashlimit, 
-             cyclelengthyears, effectivedate::text as effectivedate, expirydate::text as expirydate, 
-             status, remarks, isactive
-      FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} 
-      WHERE leavetypeid = $1 AND status = 'active' AND isactive = true
-      ORDER BY effectivedate DESC
+      SELECT lp.id, lp.leavetypeid, lt.name as leavetype, lp.annualentitlement, lp.carrylimit, lp.encashlimit, 
+             lp.cyclelengthyears, lp.effectivedate::text as effectivedate, lp.expirydate::text as expirydate, 
+             lp.status, lp.remarks, lp.isactive
+      FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} lp
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.LEAVE_TYPE} lt ON lp.leavetypeid = lt.id
+      WHERE lp.leavetypeid = $1 AND lp.status = 'active' AND lp.isactive = true
+      ORDER BY lt.name ASC, lp.effectivedate DESC
       LIMIT 1
     `;
     const result = await this.repository.query(query, [leaveTypeId]);

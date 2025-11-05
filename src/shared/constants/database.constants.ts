@@ -80,25 +80,25 @@ export const CONSTANTS_DATABASE_MODELS = {
   /** leave */
   LEAVE: 'leave',
   /** leave_type */
-  LEAVE_TYPE: 'leave_type',
+  LEAVE_TYPE: 'leavetype',
   /** leave_policy */
-  LEAVE_POLICY: 'leave_policy',
+  LEAVE_POLICY: 'leavepolicy',
   /** leave_allocation */
-  LEAVE_ALLOCATION: 'leave_allocation',
+  LEAVE_ALLOCATION: 'leaveallocation',
   /** leave_approval */
-  LEAVE_APPROVAL: 'leave_approval',
+  LEAVE_APPROVAL: 'leaveapproval',
   /** leave_balance */
-  LEAVE_BALANCE: 'leave_balance',
+  LEAVE_BALANCE: 'leavebalance',
   /** leave_category */
-  LEAVE_CATEGORY: 'leave_category',
+  LEAVE_CATEGORY: 'leavecategory',
   /** leave_request */
-  LEAVE_REQUEST: 'leave_request',
+  LEAVE_REQUEST: 'leaverequest',
   /** leave_transaction */
-  LEAVE_TRANSACTION: 'leave_transaction',
+  LEAVE_TRANSACTION: 'leavetransaction',
   /** leave_cycle */
-  LEAVE_CYCLE: 'leave_cycle',
+  LEAVE_CYCLE: 'leavecycle',
   /** leave_encashment */
-  LEAVE_ENCASHMENT: 'leave_encashment',
+  LEAVE_ENCASHMENT: 'leaveencashment',
   /** holiday */
   HOLIDAY: 'holiday',
 
