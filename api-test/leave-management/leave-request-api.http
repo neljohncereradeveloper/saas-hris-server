@@ -8,11 +8,11 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "employeeId": 1,
+  "employeeId": 4,
   "leaveType": "vacation leave",
-  "startDate": "2025-12-23",
-  "endDate": "2025-12-28",
-  "reason": "vacation leave for vacation"
+  "startDate": "2025-11-06",
+  "endDate": "2025-11-07",
+  "reason": "vacation leave for personal matters"
 }
 
 ###
@@ -86,7 +86,7 @@ Authorization: Bearer {{token}}
 
 {
   "approverId": 2,
-  "remarks": "Approved - team coverage confirmed"
+  "remarks": "Approved for vacation leave"
 }
 
 ###

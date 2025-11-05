@@ -8,14 +8,14 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "leaveType": "Vacation Leave",
+  "leaveType": "emergency leave",
   "annualEntitlement": 15.00,
   "carryLimit": 5.00,
   "encashLimit": 10.00,
-  "cycleLengthYears": 1,
-  "effectiveDate": "2025-01-01",
-  "expiryDate": "2025-12-31",
-  "remarks": "Vacation leave policy for employee rest and recreation"
+  "cycleLengthYears": 5,
+  "effectiveDate": "2025-11-26",
+  "expiryDate": "",
+  "remarks": "emergency leave policy for employee urgent needs"
 }
 
 ###
@@ -49,24 +49,24 @@ Authorization: Bearer {{token}}
 
 ###
 # UPDATE LEAVE POLICY
-PUT {{host}}/1
+PUT {{host}}/4
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "leaveType": "Vacation Leave (Updated)",
-  "annualEntitlement": 20.00,
-  "carryLimit": 7.00,
-  "encashLimit": 12.00,
-  "cycleLengthYears": 1,
-  "effectiveDate": "2025-01-01",
-  "expiryDate": "2025-12-31",
-  "remarks": "Updated vacation leave policy with increased entitlement"
+  "leaveType": "Vacation Leave",
+  "annualEntitlement": 15.00,
+  "carryLimit": 5.00,
+  "encashLimit": 10.00,
+  "cycleLengthYears": 5,
+  "effectiveDate": "2025-11-26",
+  "expiryDate": "",
+  "remarks": "Vacation leave policy for employee rest and recreation"
 }
 
 ###
 # ACTIVATE POLICY
-PATCH {{host}}/3/activate
+PATCH {{host}}/5/activate
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

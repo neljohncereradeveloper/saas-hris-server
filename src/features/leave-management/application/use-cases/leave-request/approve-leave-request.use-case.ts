@@ -135,7 +135,7 @@ export class ApproveLeaveRequestUseCase {
                 balanceId: balance.id!,
                 transactionType: EnumLeaveTransactionType.REQUEST,
                 days: -request.totalDays,
-                remarks: `Leave request approved - ${request.totalDays} days from ${request.startDate.toISOString().split('T')[0]} to ${request.endDate.toISOString().split('T')[0]}`,
+                remarks: `Leave request approved - ${request.totalDays} days from ${new Date(request.startDate).toLocaleDateString()} to ${new Date(request.endDate).toLocaleDateString()}`,
                 isActive: true,
               }),
               manager,

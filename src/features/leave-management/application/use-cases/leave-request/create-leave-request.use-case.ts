@@ -83,13 +83,37 @@ export class CreateLeaveRequestUseCase {
               );
             }
 
-            // Convert dates if strings
-            const startDate =
-              dto.startDate instanceof Date
-                ? dto.startDate
-                : new Date(dto.startDate);
-            const endDate =
-              dto.endDate instanceof Date ? dto.endDate : new Date(dto.endDate);
+            // Convert dates if strings - ensure they are valid Date objects
+            let startDate: Date;
+            let endDate: Date;
+
+            if (dto.startDate instanceof Date) {
+              if (isNaN(dto.startDate.getTime())) {
+                throw new BadRequestException('Invalid start date');
+              }
+              startDate = dto.startDate;
+            } else if (dto.startDate) {
+              startDate = new Date(dto.startDate);
+              if (isNaN(startDate.getTime())) {
+                throw new BadRequestException('Invalid start date');
+              }
+            } else {
+              throw new BadRequestException('Start date is required');
+            }
+
+            if (dto.endDate instanceof Date) {
+              if (isNaN(dto.endDate.getTime())) {
+                throw new BadRequestException('Invalid end date');
+              }
+              endDate = dto.endDate;
+            } else if (dto.endDate) {
+              endDate = new Date(dto.endDate);
+              if (isNaN(endDate.getTime())) {
+                throw new BadRequestException('Invalid end date');
+              }
+            } else {
+              throw new BadRequestException('End date is required');
+            }
 
             // Validate dates
             this.validateDates(startDate, endDate);
@@ -195,11 +219,13 @@ export class CreateLeaveRequestUseCase {
                 manager,
               );
 
+            console.log('overlappingRequests : ', overlappingRequests);
+
             if (overlappingRequests.length > 0) {
               const overlappingDates = overlappingRequests
                 .map(
                   (req) =>
-                    `${req.leaveType} (${formatDate(req.startDate)} - ${formatDate(req.endDate)})`,
+                    `${req.leaveType} (${formatDate(new Date(req.startDate))} - ${formatDate(new Date(req.endDate))})`,
                 )
                 .join(', ');
 
