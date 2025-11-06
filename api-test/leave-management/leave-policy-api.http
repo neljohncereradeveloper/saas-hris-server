@@ -13,7 +13,7 @@ Authorization: Bearer {{token}}
   "carryLimit": 5.00,
   "encashLimit": 10.00,
   "cycleLengthYears": 5,
-  "effectiveDate": "2025-11-26",
+  "effectiveDate": "2024-11-26",
   "expiryDate": "",
   "remarks": "emergency leave policy for employee urgent needs"
 }

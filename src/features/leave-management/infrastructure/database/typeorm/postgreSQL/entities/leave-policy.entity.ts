@@ -13,7 +13,7 @@ import { LeaveTypeEntity } from './leave-type.entity';
 import { EnumLeavePolicyStatus } from '@features/leave-management/domain/enum/leave-policy-status.enum';
 
 @Entity(CONSTANTS_DATABASE_MODELS.LEAVE_POLICY)
-@Index(['leavetypeid', 'effectivedate'])
+@Index(['leavetypeid', 'effectivedate'], { unique: true })
 @Index(['status'])
 @Index(['isactive'])
 export class LeavePolicyEntity {
