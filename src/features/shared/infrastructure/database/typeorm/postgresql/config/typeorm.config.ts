@@ -31,6 +31,7 @@ import { LeavePolicyEntity } from '@features/leave-management/infrastructure/dat
 import { LeaveCycleEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-cycle.entity';
 import { LeaveRequestEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-request.entity';
 import { LeaveTransactionEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-transaction.entity';
+import { LeaveYearConfigurationEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-year-configuration.entity';
 import { HolidayEntity } from '../entities/holiday.entity';
 
 export const getTypeormConfig = (
@@ -78,6 +79,7 @@ export const getTypeormConfig = (
     LeaveCycleEntity,
     LeaveRequestEntity,
     LeaveTransactionEntity,
+    LeaveYearConfigurationEntity,
 
     /** shared-features */
     HolidayEntity,

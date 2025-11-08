@@ -18,7 +18,7 @@ export class ResetLeaveBalancesForYearUseCase {
   ) {}
 
   async execute(
-    year: number,
+    year: string,
     userId: string,
     requestInfo?: {
       ipAddress?: string;

@@ -11,7 +11,7 @@ export class FindLeaveBalanceByEmployeeYearUseCase {
     private readonly leaveBalanceRepository: LeaveBalanceRepository,
   ) {}
 
-  async execute(employeeId: number, year: number): Promise<LeaveBalance[]> {
+  async execute(employeeId: number, year: string): Promise<LeaveBalance[]> {
     const leaveBalances = await this.leaveBalanceRepository.findByEmployeeYear(
       employeeId,
       year,

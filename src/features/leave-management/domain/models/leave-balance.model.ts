@@ -6,7 +6,7 @@ export class LeaveBalance {
   leaveTypeId: number;
   leaveType?: string; // the type of leave (e.g. "Vacation", "Sick", "Personal")
   policyId: number; // the policy that applies to this balance
-  year: number; // the year of the balance
+  year: string; // the leave year identifier of the balance (e.g., "2023-2024")
   beginningBalance: number; // starting leave credits at year start
   earned: number; // leaves credited during the year
   used: number; // leaves consumed
@@ -24,7 +24,7 @@ export class LeaveBalance {
     leaveTypeId: number;
     leaveType?: string;
     policyId: number;
-    year: number;
+    year: string;
     beginningBalance: number;
     earned: number;
     used: number;

@@ -16,12 +16,15 @@
 
 The Leave Management domain is a comprehensive system for managing employee leave entitlements, balances, requests, and encashment. The domain follows a cycle-based approach where leave policies define entitlements, balances track annual credits, and employees can request leave or encash unused credits within defined limits.
 
+**Leave Year System:** The system uses flexible cutoff periods (defined by LeaveYearConfiguration) to determine leave year boundaries. Instead of calendar years, leave years can be defined by custom date ranges (e.g., Nov 26 to Nov 25). This allows organizations to align leave years with their business cycles. Leave balances use leave year identifiers (e.g., "2023-2024") instead of numeric calendar years, enabling accurate tracking across different cutoff periods.
+
 ### Core Concepts
 
 - **Leave Types**: Categories of leave (Vacation, Sick, Personal, etc.)
 - **Leave Policies**: Rules governing leave entitlements, carry-over, and encashment limits
+- **Leave Year Configuration**: Defines cutoff periods that determine leave year boundaries (e.g., Nov 26 to Nov 25)
 - **Leave Cycles**: Multi-year periods for tracking leave usage and carry-over
-- **Leave Balances**: Annual tracking of earned, used, carried over, and remaining leave days
+- **Leave Balances**: Annual tracking of earned, used, carried over, and remaining leave days (tied to leave year identifiers)
 - **Leave Requests**: Employee applications for time off
 - **Leave Transactions**: Historical record of all balance changes
 - **Leave Encashment**: Converting unused leave days to cash compensation
@@ -110,7 +113,7 @@ Tracks an employee's leave credits for a specific year and leave type.
 - `leaveTypeId` (number): Reference to leave type
 - `leaveType` (string): Name of leave type (denormalized)
 - `policyId` (number): Reference to the active policy for this balance
-- `year` (number): Year this balance covers
+- `year` (string): Leave year identifier this balance covers (e.g., "2023-2024" for Nov 26, 2023 to Nov 25, 2024)
 - `beginningBalance` (number): Starting balance at year beginning
 - `earned` (number): Days credited during the year
 - `used` (number): Days consumed (from approved requests)
@@ -142,10 +145,10 @@ remaining = (beginningBalance + earned + carriedOver) - (used + encashed)
 - `create(balance, context)` - Create a new balance
 - `update(id, dto, context)` - Update balance details
 - `findById(id, context)` - Retrieve by ID
-- `findByEmployeeYear(employeeId, year)` - Get all balances for an employee in a year
-- `findByLeaveType(employeeId, leaveTypeId, year, context)` - Find specific balance
+- `findByEmployeeYear(employeeId, year)` - Get all balances for an employee in a leave year (year is string identifier)
+- `findByLeaveType(employeeId, leaveTypeId, year, context)` - Find specific balance (year is string identifier)
 - `closeBalance(id, context)` - Close a balance at year-end
-- `resetBalancesForYear(year, context)` - Initialize balances for all employees
+- `resetBalancesForYear(year, context)` - Initialize balances for all employees (year is string identifier)
 - `softDelete(id, isActive, context)` - Deactivate a balance
 
 ---
@@ -289,7 +292,62 @@ Tracks requests to convert unused leave to cash compensation.
 
 ---
 
-### 8. Holiday (Shared Domain)
+### 8. LeaveYearConfiguration
+
+Defines the cutoff period that determines leave year boundaries. This allows flexible leave year definitions that don't align with calendar years (e.g., Nov 26 to Nov 25).
+
+**Fields:**
+
+- `id` (number): Unique identifier
+- `cutoffStartDate` (Date): Start date of the cutoff period (e.g., Nov 26)
+- `cutoffEndDate` (Date): End date of the cutoff period (e.g., Nov 25 of next year)
+- `year` (string): Leave year identifier (e.g., "2023-2024") - generated from cutoff dates
+- `remarks` (string): Optional notes about the configuration
+- `isActive` (boolean): Whether the configuration is active
+
+**Business Purpose:** Defines flexible leave year boundaries that can change from year to year. The cutoff period determines which leave year a date falls into, enabling custom leave year definitions (e.g., Nov 26 to Nov 25) instead of calendar years.
+
+**Key Features:**
+
+- **Flexible Cutoff Dates**: Each configuration can have different start and end dates
+- **Leave Year Identifier**: Automatically generated in format "YYYY-YYYY" (e.g., "2023-2024")
+- **Date-Based Lookup**: System finds active configuration for any given date
+- **Historical Tracking**: Old configurations preserved when new ones are created
+
+**Repository Operations:**
+
+- `create(configuration, context)` - Create a new cutoff configuration
+- `update(id, dto, context)` - Update cutoff dates or details
+- `findById(id, context)` - Retrieve by ID
+- `findByYear(year, context)` - Find configuration by leave year identifier
+- `findActiveForDate(date, context)` - Get active configuration for a specific date
+- `findAll(context)` - Get all active configurations
+- `softDelete(id, isActive, context)` - Deactivate a configuration
+
+**Example Usage:**
+
+```
+Configuration 1:
+- cutoffStartDate: Nov 26, 2023
+- cutoffEndDate: Nov 25, 2024
+- year: "2023-2024"
+
+Configuration 2:
+- cutoffStartDate: Nov 26, 2024
+- cutoffEndDate: Nov 5, 2025  (different end date)
+- year: "2024-2025"
+```
+
+**Important Rules:**
+
+- Only one active configuration can cover a specific date
+- Cutoff end date must be after cutoff start date
+- Leave year identifier is automatically generated from dates
+- When cutoff dates change, create a new configuration (old balances remain tied to old cutoff)
+
+---
+
+### 9. Holiday (Shared Domain)
 
 **Note:** Holiday management is located in the **shared domain** (`@features/shared`) because holidays are used by multiple domains including leave management and payroll.
 
@@ -331,9 +389,9 @@ Represents a public holiday or company holiday that affects leave calculations a
 
 The Leave Management domain operates in a cyclical manner with the following key processes:
 
-1. **Initial Setup** (Process 0): Configure leave types, policies, and initialize balances for all employees
-2. **Daily Operations** (Process 1): Handle leave requests, approvals, and ongoing balance updates
-3. **Year-End Processing** (Process 2): Close current year balances, carry over unused leave, initialize new year
+1. **Initial Setup** (Process 0): Configure leave year cutoff periods, leave types, policies, and initialize balances for all employees
+2. **Daily Operations** (Process 1): Handle leave requests, approvals, and ongoing balance updates (uses cutoff-based year lookup)
+3. **Year-End Processing** (Process 2): Close current leave year balances, carry over unused leave, initialize new leave year with new cutoff configuration
 4. **Leave Encashment** (Process 3): Convert unused leave to cash compensation
 5. **Policy Management** (Process 4): Create, activate, and update leave policies
 6. **Leave Cycle Management** (Process 5): Manage multi-year leave cycles and cycle-based carry-over
@@ -345,6 +403,7 @@ The Leave Management domain operates in a cyclical manner with the following key
 System Lifecycle:
 ┌─────────────────────────────────────────────────────────────┐
 │ Phase 0: Initial Setup                                    │
+│ • Configure Leave Year Cutoff Periods                     │
 │ • Configure LeaveTypes                                     │
 │ • Create and Activate Policies                             │
 │ • Initialize Balances for All Employees                   │
@@ -360,10 +419,11 @@ System Lifecycle:
                             ↓
 ┌─────────────────────────────────────────────────────────────┐
 │ Phase 2: Year-End Processing                               │
-│ • Close Current Year Balances (Process 6)                  │
+│ • Create New Cutoff Configuration (if dates changed)      │
+│ • Close Current Leave Year Balances (Process 6)           │
 │ • Calculate Carry-Over                                     │
 │ • Close Completed Cycles (Process 5)                      │
-│ • Generate New Year Balances (Process 6)                   │
+│ • Generate New Leave Year Balances (Process 6)            │
 │ • Start New Cycles (Process 5)                            │
 └─────────────────────────────────────────────────────────────┘
                             ↓
@@ -378,7 +438,24 @@ This process establishes the leave management system for the first time.
 
 #### Phase 1: Configuration Setup
 
-1. **Define Leave Types**
+1. **Define Leave Year Configuration**
+
+   - Create LeaveYearConfiguration for the initial leave year period
+   - Set cutoff start date and end date (e.g., Nov 26, 2023 to Nov 25, 2024)
+   - System automatically generates leave year identifier (e.g., "2023-2024")
+   - Set `isActive = true`
+
+   **Entities Created:**
+
+   ```
+   LeaveYearConfiguration:
+   - cutoffStartDate: Nov 26, 2023
+   - cutoffEndDate: Nov 25, 2024
+   - year: "2023-2024"
+   - isActive: true
+   ```
+
+2. **Define Leave Types**
 
    - Create LeaveType entities for all leave categories
    - Example types: Annual Vacation (VL), Sick Leave (SL), Personal Leave (PL), Unpaid Leave (UL)
@@ -391,7 +468,7 @@ This process establishes the leave management system for the first time.
    LeaveType: VL, SL, PL, UL (all with isActive=true)
    ```
 
-2. **Create Leave Policies**
+3. **Create Leave Policies**
 
    - For each LeaveType, create a LeavePolicy with status DRAFT
    - Define policy parameters:
@@ -434,21 +511,22 @@ This process establishes the leave management system for the first time.
 
 #### Phase 3: Initial Balance Setup
 
-4. **Initialize Current Year Balances**
+4. **Initialize Current Leave Year Balances**
 
+   - Get active cutoff configuration for current date
    - For each active employee:
      - For each active LeavePolicy:
        - Get the active policy for their leave type
-       - Calculate current date's position in year
+       - Calculate current date's position in leave year period
        - Determine beginning balance (may be pro-rated for new employees)
        - Create LeaveBalance (see Process 6: Scenario A for detailed steps):
          - `earned`: Set to policy.annualEntitlement (or pro-rated)
          - `used`: 0 (no leave taken yet)
-         - `carriedOver`: 0 (first year, no prior balance)
+         - `carriedOver`: 0 (first leave year, no prior balance)
          - `encashed`: 0
          - `remaining`: earned
          - `status`: OPEN
-         - `year`: current year
+         - `year`: current leave year identifier (e.g., "2023-2024")
 
    **Entities Created:**
 
@@ -564,10 +642,12 @@ This scenario handles the initial creation of a leave request by an employee.
 
 3. **Retrieve and Validate Leave Balance**
 
+   - Get active cutoff configuration for the start date
+   - Calculate leave year identifier from cutoff configuration
    - Query LeaveBalance for:
      - `employeeId`: Requesting employee
      - `leaveTypeId`: Selected leave type
-     - `year`: Year of start date
+     - `year`: Leave year identifier (e.g., "2023-2024") calculated from cutoff
    - Validate balance exists and is OPEN
    - Check sufficient balance: `totalDays ≤ balance.remaining`
 
@@ -586,6 +666,10 @@ This scenario handles the initial creation of a leave request by an employee.
    **Example:**
 
    ```
+   Start Date: January 15, 2024
+   Active Cutoff: Nov 26, 2023 to Nov 25, 2024
+   Leave Year: "2023-2024"
+
    Requested: 5 days
    Balance.remaining: 10 days
    Result: ✓ Valid (10 ≥ 5)
@@ -1150,7 +1234,9 @@ This process runs at the end of each year to close current year and prepare for 
 
 1. **Identify Balances to Close**
 
-   - Query all LeaveBalance records with status OPEN and current year
+   - Get active cutoff configuration for the current date
+   - Determine which leave year is ending based on cutoff period
+   - Query all LeaveBalance records with status OPEN and the ending leave year identifier
    - Filter to include all active employees
    - See Process 6: Scenario C for detailed closing process
 
@@ -1198,18 +1284,19 @@ This process runs at the end of each year to close current year and prepare for 
 
 6. **Create New Balances**
 
+   - Get or create new cutoff configuration for the next leave year period
    - For each active employee:
      - For each active LeavePolicy:
        - Get the active policy for leave type
        - Generate new year balances (see Process 6: Scenario A for detailed steps)
-       - Create LeaveBalance for new year:
+       - Create LeaveBalance for new leave year:
          - `earned`: policy.annualEntitlement
          - `used`: 0
-         - `carriedOver`: from previous year's calculation
+         - `carriedOver`: from previous leave year's calculation
          - `encashed`: 0
          - `remaining`: earned + carriedOver
          - `status`: OPEN
-         - `year`: new year
+         - `year`: new leave year identifier (e.g., "2024-2025")
          - `beginningBalance`: 0 (or set to carriedOver if tracking separately)
 
 7. **Start New Cycles (if needed)**
@@ -1849,9 +1936,10 @@ This scenario handles bulk generation of leave balances for all active employees
        - If exists and `forceRegenerate = false`: Skip (count as skipped)
        - If exists and `forceRegenerate = true`: Continue to create new balance
 
-3. **Calculate Carry-Over from Previous Year**
+3. **Calculate Carry-Over from Previous Leave Year**
 
-   - Query previous year balance for same employee and leave type
+   - Get all cutoff configurations to find the previous leave year
+   - Query previous leave year balance for same employee and leave type
    - If previous balance exists:
      - Get remaining days: `previousBalance.remaining`
      - Apply carry limit: `carriedOver = min(remaining, policy.carryLimit)`
@@ -1861,11 +1949,14 @@ This scenario handles bulk generation of leave balances for all active employees
    **Example:**
 
    ```
-   Previous year (2023) balance:
+   Previous leave year ("2023-2024") balance:
    - remaining: 8 days
    - policy.carryLimit: 5 days
-   - carriedOver for 2024: min(8, 5) = 5 days
+   - carriedOver for "2024-2025": min(8, 5) = 5 days
    - 3 days forfeited
+
+   Note: Previous leave year is found by locating the cutoff configuration
+   that comes before the current one, not by calendar year subtraction.
    ```
 
 4. **Calculate Earned Days**
@@ -1875,12 +1966,13 @@ This scenario handles bulk generation of leave balances for all active employees
 
 5. **Create Balance Record**
 
+   - Get or create cutoff configuration for the target leave year
    - Create new LeaveBalance with:
      - `employeeId`: Employee ID
      - `leaveTypeId`: Policy's leave type ID
      - `leaveType`: Policy's leave type name
      - `policyId`: Policy ID
-     - `year`: Target year
+     - `year`: Target leave year identifier (e.g., "2024-2025")
      - `beginningBalance`: earned + carriedOver
      - `earned`: policy.annualEntitlement
      - `used`: 0
@@ -1907,7 +1999,7 @@ This scenario handles bulk generation of leave balances for all active employees
 **Example Output:**
 
 ```
-Year: 2024
+Leave Year: "2024-2025"
 Active Policies: 3 (VL, SL, PL)
 Active Employees: 150
 
@@ -1929,16 +2021,19 @@ This scenario handles creating a single leave balance for a specific employee, t
 
 2. **Check for Duplicate Balance**
 
-   - Query existing balance for: employee, leave type, and year
+   - Query existing balance for: employee, leave type, and leave year identifier
    - If balance exists: Throw error (prevents duplicate balances)
    - If not exists: Continue with creation
 
-3. **Calculate Carry-Over from Previous Year**
+3. **Calculate Carry-Over from Previous Leave Year**
 
-   - Query previous year balance (year - 1) for same employee and leave type
+   - Get all cutoff configurations to find the previous leave year
+   - Query previous leave year balance for same employee and leave type
    - If previous balance exists:
      - Calculate: `carriedOver = min(previousBalance.remaining, policy.carryLimit)`
    - If no previous balance: `carriedOver = 0`
+
+   **Note:** Previous leave year is determined by finding the cutoff configuration that comes before the current one, not by subtracting 1 from a calendar year.
 
 4. **Calculate Earned Days**
 
@@ -2009,10 +2104,10 @@ OPEN → CLOSED
 
 This scenario covers read-only operations to retrieve balances for validation, reporting, and display purposes.
 
-**Operation 1: Find Balances by Employee and Year**
+**Operation 1: Find Balances by Employee and Leave Year**
 
-- Purpose: Get all leave balances for a specific employee in a specific year
-- Input: `employeeId`, `year`
+- Purpose: Get all leave balances for a specific employee in a specific leave year
+- Input: `employeeId`, `year` (leave year identifier string, e.g., "2023-2024")
 - Output: Array of LeaveBalance records (all leave types)
 - Use cases:
   - Employee dashboard display
@@ -2021,8 +2116,8 @@ This scenario covers read-only operations to retrieve balances for validation, r
 
 **Operation 2: Find Balance by Leave Type**
 
-- Purpose: Get specific balance for employee, leave type, and year
-- Input: `employeeId`, `leaveTypeId`, `year`
+- Purpose: Get specific balance for employee, leave type, and leave year
+- Input: `employeeId`, `leaveTypeId`, `year` (leave year identifier string)
 - Output: Single LeaveBalance or null
 - Use cases:
   - Leave request validation (check available balance)
@@ -2177,7 +2272,8 @@ Action:
 - **Balance Validation**: Request days ≤ remaining balance
 
   - Formula: `totalDays ≤ balance.remaining`
-  - Validated at request submission (Scenario A)
+  - Leave year determined by cutoff configuration for request start date
+  - Validated at request submission (Scenario A) - uses cutoff-based year lookup
   - Re-validated at approval time (Scenario C) - balance may have changed
   - If insufficient balance: Request cannot be created or approved
 
@@ -2377,7 +2473,40 @@ Action:
   - New cycles created after policy change use new cycle length
   - Policy changes should not disrupt active cycles mid-execution
 
-### 6. Audit and Compliance
+### 6. Leave Year Configuration Rules
+
+- **Cutoff Period Definition**: Each configuration defines a leave year period with flexible start and end dates
+
+  - Example: Nov 26, 2023 to Nov 25, 2024
+  - Next period can have different dates: Nov 26, 2024 to Nov 5, 2025
+  - Cutoff dates can change frequently without affecting existing balances
+
+- **Leave Year Identifier**: Automatically generated from cutoff dates
+
+  - Format: "YYYY-YYYY" (e.g., "2023-2024")
+  - First year from cutoffStartDate, second year from cutoffEndDate
+  - Used as the `year` field in LeaveBalance entities
+
+- **Date-Based Lookup**: System finds active configuration for any date
+
+  - `findActiveForDate(date)` returns configuration covering that date
+  - Only one active configuration can cover a specific date
+  - Used to determine which leave year a date falls into
+
+- **Historical Preservation**: Old configurations remain when new ones are created
+
+  - Existing balances remain tied to their original cutoff configuration
+  - New balances use the active configuration for their creation date
+  - Enables tracking of historical leave year definitions
+
+- **Configuration Management**:
+
+  - Create new configuration when cutoff dates change
+  - Update existing configuration (regenerates year identifier if dates change)
+  - Deactivate old configurations (soft delete)
+  - All configurations are global (apply to all leave types)
+
+### 7. Audit and Compliance
 
 - **Transaction Log**: All balance changes must create a LeaveTransaction
 
@@ -2429,6 +2558,12 @@ LeaveType (1) ────< (M) LeavePolicy
    │                   (M) │
    │                       ▼
    │                 Employee
+   │
+LeaveYearConfiguration (Global)
+   │
+   │ (Used by all balances to determine leave year)
+   │
+   └───> LeaveBalance.year (string identifier)
 ```
 
 ### Relationship Details
@@ -2440,7 +2575,7 @@ LeaveType (1) ────< (M) LeavePolicy
 
 2. **LeaveType → LeaveBalance** (1:M)
 
-   - One leave type can have multiple balances (different employees, years)
+   - One leave type can have multiple balances (different employees, leave years)
    - Balance references a specific LeaveType
 
 3. **LeavePolicy → LeaveBalance** (1:M)
@@ -2448,22 +2583,30 @@ LeaveType (1) ────< (M) LeavePolicy
    - One policy can have multiple balances
    - Balance references a specific policy that was active when it was created
 
-4. **LeaveBalance → LeaveTransaction** (1:M)
+4. **LeaveYearConfiguration → LeaveBalance** (Indirect)
+
+   - LeaveYearConfiguration defines cutoff periods globally
+   - LeaveBalance.year field stores leave year identifier (e.g., "2023-2024")
+   - System uses cutoff configuration to determine which leave year a date falls into
+   - Multiple balances can reference the same leave year identifier
+
+5. **LeaveBalance → LeaveTransaction** (1:M)
 
    - One balance has many transaction records
    - Every balance change creates a transaction
 
-5. **LeaveBalance → LeaveRequest** (1:M)
+6. **LeaveBalance → LeaveRequest** (1:M)
 
    - One balance can have multiple requests
    - Request references the balance it uses
+   - Request creation uses cutoff configuration to find correct balance
 
-6. **LeaveBalance → LeaveEncashment** (1:M)
+7. **LeaveBalance → LeaveEncashment** (1:M)
 
    - One balance can have multiple encashments
    - Encashment references the balance it uses
 
-7. **Employee → All Entities** (1:M)
+8. **Employee → All Entities** (1:M)
    - Employee has multiple balances, requests, encashments
    - All entities reference employeeId
 
@@ -2612,13 +2755,15 @@ ACTIVE → COMPLETED
 
 **Steps:**
 
-1. Close all OPEN balances for current year
-2. Calculate carry-over for each employee/leave type
-3. Create new balances for all active employees
-4. Set earned = annual entitlement
-5. Carry over days within policy limit
+1. Get active cutoff configuration to determine ending leave year
+2. Close all OPEN balances for the ending leave year
+3. Get or create new cutoff configuration for next leave year period
+4. Calculate carry-over for each employee/leave type (from previous leave year)
+5. Create new balances for all active employees with new leave year identifier
+6. Set earned = annual entitlement
+7. Carry over days within policy limit
 
-**Success:** All employees have new year balances with proper carry-over
+**Success:** All employees have new leave year balances with proper carry-over
 
 ---
 
@@ -2684,7 +2829,7 @@ ACTIVE → COMPLETED
 **Steps:**
 
 1. Query LeaveRequest by employee
-2. Query LeaveBalance by employee/year
+2. Query LeaveBalance by employee and leave year identifier (e.g., "2023-2024")
 3. Query LeaveTransaction by balance
 4. Display chronological history
 
@@ -2729,8 +2874,8 @@ ACTIVE → COMPLETED
 1. **Generate Annual Balances** (Scenario A):
 
    - Run bulk generation for all active employees
-   - System calculates carry-over from previous year
-   - Creates balances for all employee-policy combinations
+   - System calculates carry-over from previous leave year
+   - Creates balances for all employee-policy combinations with leave year identifier
    - Returns generation statistics (generated/skipped counts)
 
 2. **Create Individual Balance** (Scenario B):
@@ -2742,14 +2887,14 @@ ACTIVE → COMPLETED
 
 3. **Query Balances** (Scenario D):
 
-   - Find balances by employee and year (all leave types)
-   - Find specific balance by leave type
+   - Find balances by employee and leave year identifier (all leave types)
+   - Find specific balance by leave type and leave year identifier
    - Used for validation, reporting, dashboards
 
 4. **Close Balances** (Scenario C):
 
-   - At year-end or administrative closure:
-     - Close all OPEN balances for a year
+   - At leave year-end or administrative closure:
+     - Close all OPEN balances for a leave year identifier
      - Balances become read-only after closure
 
 5. **Balance Corrections** (Scenario F):

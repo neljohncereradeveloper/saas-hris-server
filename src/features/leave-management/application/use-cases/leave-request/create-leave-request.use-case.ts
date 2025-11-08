@@ -3,6 +3,7 @@ import { LeaveRequestRepository } from '@features/leave-management/domain/reposi
 import { LeaveBalanceRepository } from '@features/leave-management/domain/repositories/leave-balance.repository';
 import { LeaveTypeRepository } from '@features/leave-management/domain/repositories/leave-type.repository';
 import { LeavePolicyRepository } from '@features/leave-management/domain/repositories/leave-policy.repository';
+import { LeaveYearConfigurationRepository } from '@features/leave-management/domain/repositories/leave-year-configuration.repository';
 import { HolidayRepository } from '@features/shared/domain/repositories/holiday.repository';
 import { EmployeeRepository } from '@features/shared/domain/repositories/employee.repository';
 import { Inject, Injectable } from '@nestjs/common';
@@ -19,6 +20,8 @@ import {
 import { EnumLeaveRequestStatus } from '@features/leave-management/domain/enum/leave-request-status.enum';
 import { EnumLeaveBalanceStatus } from '@features/leave-management/domain/enum/leave-balance-status.enum';
 import { formatDate } from '@features/shared/infrastructure/utils/date.util';
+import { getActiveCutoffForDate } from '@features/leave-management/infrastructure/utils/get-active-cutoff.util';
+import { calculateLeaveYear } from '@features/leave-management/infrastructure/utils/leave-year.util';
 
 @Injectable()
 export class CreateLeaveRequestUseCase {
@@ -33,6 +36,8 @@ export class CreateLeaveRequestUseCase {
     private readonly leaveTypeRepository: LeaveTypeRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.LEAVE_POLICY)
     private readonly leavePolicyRepository: LeavePolicyRepository,
+    @Inject(CONSTANTS_REPOSITORY_TOKENS.LEAVE_YEAR_CONFIGURATION)
+    private readonly leaveYearConfigurationRepository: LeaveYearConfigurationRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.HOLIDAY)
     private readonly holidayRepository: HolidayRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.EMPLOYEE)
@@ -207,8 +212,26 @@ export class CreateLeaveRequestUseCase {
               );
             }
 
-            // Get year from start date
-            const year = startDate.getFullYear();
+            // Get active cutoff configuration for the start date
+            const cutoffConfiguration = await getActiveCutoffForDate(
+              startDate,
+              this.leaveYearConfigurationRepository,
+            );
+
+            if (!cutoffConfiguration) {
+              throw new NotFoundException(
+                `No active leave year configuration found for date ${formatDate(startDate)}`,
+              );
+            }
+
+            // Calculate leave year identifier from cutoff configuration
+            const year = calculateLeaveYear(startDate, cutoffConfiguration);
+
+            if (!year) {
+              throw new BadRequestException(
+                `Date ${formatDate(startDate)} does not fall within any active leave year cutoff period`,
+              );
+            }
 
             // Retrieve and validate leave balance
             const balance = await this.leaveBalanceRepository.findByLeaveType(
@@ -220,7 +243,7 @@ export class CreateLeaveRequestUseCase {
 
             if (!balance) {
               throw new NotFoundException(
-                `Leave balance not found for employee ${dto.employeeId}, leave type "${dto.leaveType}", year ${year}`,
+                `Leave balance not found for employee ${dto.employeeId}, leave type "${dto.leaveType}", leave year ${year}`,
               );
             }
 

@@ -99,6 +99,8 @@ export const CONSTANTS_DATABASE_MODELS = {
   LEAVE_CYCLE: 'leavecycle',
   /** leave_encashment */
   LEAVE_ENCASHMENT: 'leaveencashment',
+  /** leave_year_configuration */
+  LEAVE_YEAR_CONFIGURATION: 'leaveyearconfiguration',
   /** holiday */
   HOLIDAY: 'holiday',
 

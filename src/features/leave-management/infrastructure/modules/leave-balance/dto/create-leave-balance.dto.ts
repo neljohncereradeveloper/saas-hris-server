@@ -52,18 +52,13 @@ export class CreateLeaveBalanceDto {
   policyId: number;
 
   @ApiProperty({
-    description: 'Year for the leave balance',
-    example: 2024,
-    minimum: 2000,
-    maximum: 2100,
+    description: 'Leave year identifier for the leave balance (e.g., "2023-2024")',
+    example: '2023-2024',
   })
-  @RequiredNumberValidation({
+  @RequiredStringValidation({
     fieldName: 'Year',
-    min: 2000,
-    max: 2100,
-    allowZero: false,
-    allowNegative: false,
-    transform: true,
+    minLength: 1,
+    maxLength: 20,
   })
-  year: number;
+  year: string;
 }

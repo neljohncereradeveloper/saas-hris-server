@@ -32,6 +32,7 @@ import { LeaveBalanceEntity } from '@features/leave-management/infrastructure/da
 import { LeaveCycleEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-cycle.entity';
 import { LeaveRequestEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-request.entity';
 import { LeaveTransactionEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-transaction.entity';
+import { LeaveYearConfigurationEntity } from '@features/leave-management/infrastructure/database/typeorm/postgreSQL/entities/leave-year-configuration.entity';
 import { HolidayEntity } from '../entities/holiday.entity';
 
 config();
@@ -79,6 +80,7 @@ export default new DataSource({
     LeaveCycleEntity,
     LeaveRequestEntity,
     LeaveTransactionEntity,
+    LeaveYearConfigurationEntity,
     /** shared-features */
     HolidayEntity,
   ], // this uses the compiled entites in the dist folder

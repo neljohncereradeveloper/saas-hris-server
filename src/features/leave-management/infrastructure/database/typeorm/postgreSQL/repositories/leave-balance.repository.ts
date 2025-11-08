@@ -180,7 +180,7 @@ export class LeaveBalanceRepositoryImpl
 
   async findByEmployeeYear(
     employeeId: number,
-    year: number,
+    year: string,
   ): Promise<LeaveBalance[]> {
     const query = `
       SELECT lb.id, lb.employeeid, lb.leavetypeid, lb.policyid, lb.year, 
@@ -220,7 +220,7 @@ export class LeaveBalanceRepositoryImpl
   async findByLeaveType(
     employeeId: number,
     leaveTypeId: number,
-    year: number,
+    year: string,
     manager: EntityManager,
   ): Promise<LeaveBalance | null> {
     const query = `
@@ -268,7 +268,7 @@ export class LeaveBalanceRepositoryImpl
   }
 
   async resetBalancesForYear(
-    year: number,
+    year: string,
     manager: EntityManager,
   ): Promise<boolean> {
     const query = `

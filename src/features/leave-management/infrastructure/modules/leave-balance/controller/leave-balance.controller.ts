@@ -98,7 +98,11 @@ export class LeaveBalanceController {
     summary: 'Get all leave balances for an employee for a specific year',
   })
   @ApiParam({ name: 'employeeId', description: 'Employee ID', example: 1 })
-  @ApiParam({ name: 'year', description: 'Year', example: 2024 })
+  @ApiParam({
+    name: 'year',
+    description: 'Leave year identifier (e.g., "2023-2024")',
+    example: '2023-2024',
+  })
   @ApiResponse({
     status: 200,
     description: 'Leave balances retrieved successfully',
@@ -108,7 +112,7 @@ export class LeaveBalanceController {
   @ApiBearerAuth('JWT-auth')
   async findByEmployeeYear(
     @Param('employeeId', ParseIntPipe) employeeId: number,
-    @Param('year', ParseIntPipe) year: number,
+    @Param('year') year: string,
   ) {
     return this.findLeaveBalanceByEmployeeYearUseCase.execute(employeeId, year);
   }
@@ -194,7 +198,11 @@ export class LeaveBalanceController {
   @Version('1')
   @Post('reset/year/:year')
   @ApiOperation({ summary: 'Reset all leave balances for a specific year' })
-  @ApiParam({ name: 'year', description: 'Year to reset', example: 2024 })
+  @ApiParam({
+    name: 'year',
+    description: 'Leave year identifier to reset (e.g., "2023-2024")',
+    example: '2023-2024',
+  })
   @ApiResponse({
     status: 200,
     description: 'Leave balances reset successfully',
@@ -202,7 +210,7 @@ export class LeaveBalanceController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBearerAuth('JWT-auth')
   async resetForYear(
-    @Param('year', ParseIntPipe) year: number,
+    @Param('year') year: string,
     @Req() request: Request,
   ) {
     return this.resetLeaveBalancesForYearUseCase.execute(

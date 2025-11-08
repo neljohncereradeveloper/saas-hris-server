@@ -1,5 +1,6 @@
 import { LeaveBalance } from '@features/leave-management/domain/models/leave-balance.model';
 import { LeaveBalanceRepository } from '@features/leave-management/domain/repositories/leave-balance.repository';
+import { LeaveYearConfigurationRepository } from '@features/leave-management/domain/repositories/leave-year-configuration.repository';
 import { Inject, Injectable } from '@nestjs/common';
 import { CONSTANTS_DATABASE_MODELS } from '@shared/constants/database.constants';
 import { CONSTANTS_LOG_ACTION } from '@shared/constants/log-action.constants';
@@ -28,6 +29,8 @@ export class CreateLeaveBalanceUseCase {
     private readonly leaveTypeRepository: LeaveTypeRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.LEAVE_POLICY)
     private readonly leavePolicyRepository: LeavePolicyRepository,
+    @Inject(CONSTANTS_REPOSITORY_TOKENS.LEAVE_YEAR_CONFIGURATION)
+    private readonly leaveYearConfigurationRepository: LeaveYearConfigurationRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.EMPLOYEE)
     private readonly employeeRepository: EmployeeRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.ERROR_HANDLER)
@@ -83,8 +86,19 @@ export class CreateLeaveBalanceUseCase {
               throw new NotFoundException('Invalid or inactive policy');
             }
 
-            // Check eligibility before creating balance
-            const referenceDate = new Date(dto.year, 0, 1); // Start of the year
+            // Get the cutoff configuration for the leave year to determine reference date
+            const cutoffConfig = await this.leaveYearConfigurationRepository.findByYear(
+              dto.year,
+              manager,
+            );
+            if (!cutoffConfig) {
+              throw new NotFoundException(
+                `Leave year configuration not found for year ${dto.year}`,
+              );
+            }
+
+            // Use cutoff start date as reference date for eligibility check
+            const referenceDate = cutoffConfig.cutoffStartDate;
             const eligibilityCheck = policy.isEmployeeEligible(
               employee.hireDate,
               employee.employeeStatus || '',
@@ -111,14 +125,30 @@ export class CreateLeaveBalanceUseCase {
               );
             }
 
-            // Step 6: Check if a previous year leave balance exists for the same employee and leave type
-            const previousYearBalance =
-              await this.leaveBalanceRepository.findByLeaveType(
-                employee.id!,
-                policy.leaveTypeId,
-                dto.year - 1,
-                manager,
-              );
+            // Step 6: Find previous leave year configuration and check for previous balance
+            // Get all configurations to find the one that comes before the current one
+            const allConfigs = await this.leaveYearConfigurationRepository.findAll(
+              manager,
+            );
+            const currentConfigIndex = allConfigs.findIndex(
+              (c) => c.year === dto.year,
+            );
+            let previousYear: string | null = null;
+            if (currentConfigIndex > 0) {
+              previousYear = allConfigs[currentConfigIndex - 1].year;
+            }
+
+            // Check if a previous year leave balance exists for the same employee and leave type
+            let previousYearBalance: LeaveBalance | null = null;
+            if (previousYear) {
+              previousYearBalance =
+                await this.leaveBalanceRepository.findByLeaveType(
+                  employee.id!,
+                  policy.leaveTypeId,
+                  previousYear,
+                  manager,
+                );
+            }
 
             // Step 7: Calculate carry-over days based on the previous balance and policy rules
             const carryOverDays = this.calculateCarryOverDays(

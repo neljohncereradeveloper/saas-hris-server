@@ -36,9 +36,9 @@ export class LeaveBalanceEntity {
   @Column()
   policyid: number;
 
-  /** Year of the balance */
-  @Column()
-  year: number;
+  /** Year of the balance (leave year identifier, e.g., "2023-2024") */
+  @Column({ type: 'varchar', length: 20 })
+  year: string;
 
   /** Starting leave credits at year start */
   @Column('decimal', { precision: 5, scale: 2 })

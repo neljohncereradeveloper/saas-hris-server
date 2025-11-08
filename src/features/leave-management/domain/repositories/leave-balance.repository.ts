@@ -9,13 +9,13 @@ export interface LeaveBalanceRepository<Context = unknown> {
   ): Promise<boolean>;
   softDelete(id: number, isActive: boolean, context: Context): Promise<boolean>;
   findById(id: number, context: Context): Promise<LeaveBalance | null>;
-  findByEmployeeYear(employeeId: number, year: number): Promise<LeaveBalance[]>;
+  findByEmployeeYear(employeeId: number, year: string): Promise<LeaveBalance[]>;
   findByLeaveType(
     employeeId: number,
     leaveTypeId: number,
-    year: number,
+    year: string,
     context: Context,
   ): Promise<LeaveBalance | null>;
   closeBalance(id: number, context: Context): Promise<boolean>;
-  resetBalancesForYear(year: number, context: Context): Promise<boolean>;
+  resetBalancesForYear(year: string, context: Context): Promise<boolean>;
 }

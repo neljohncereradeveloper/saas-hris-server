@@ -1,26 +1,20 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-  RequiredNumberValidation,
-  OptionalNumberValidation,
+  RequiredStringValidation,
 } from '@features/shared/infrastructure/decorators/validation.decorator';
 import { IsBoolean, IsOptional } from 'class-validator';
 
 export class GenerateAnnualLeaveBalancesDto {
   @ApiProperty({
-    description: 'Year to generate leave balances for',
-    example: 2024,
-    minimum: 2000,
-    maximum: 2100,
+    description: 'Leave year identifier to generate leave balances for (e.g., "2023-2024")',
+    example: '2023-2024',
   })
-  @RequiredNumberValidation({
+  @RequiredStringValidation({
     fieldName: 'Year',
-    min: 2000,
-    max: 2100,
-    allowZero: false,
-    allowNegative: false,
-    transform: true,
+    minLength: 1,
+    maxLength: 20,
   })
-  year: number;
+  year: string;
 
   @ApiPropertyOptional({
     description: 'Force regeneration of existing balances',

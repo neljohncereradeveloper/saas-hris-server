@@ -13,6 +13,7 @@ import { TransactionAdapter } from '@features/shared/infrastructure/database/typ
 import { LeaveBalanceRepositoryImpl } from '../../database/typeorm/postgreSQL/repositories/leave-balance.repository';
 import { LeaveTypeRepositoryImpl } from '../../database/typeorm/postgreSQL/repositories/leave-type.repository';
 import { LeavePolicyRepositoryImpl } from '../../database/typeorm/postgreSQL/repositories/leave-policy.repository';
+import { LeaveYearConfigurationRepositoryImpl } from '../../database/typeorm/postgreSQL/repositories/leave-year-configuration.repository';
 import { EmployeeRepositoryImpl } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/repositories/employee.repository';
 import { ErrorHandlerService } from '@features/shared/infrastructure/services/error-handler.service';
 
@@ -47,6 +48,10 @@ import { ErrorHandlerService } from '@features/shared/infrastructure/services/er
     {
       provide: CONSTANTS_REPOSITORY_TOKENS.ERROR_HANDLER,
       useClass: ErrorHandlerService,
+    },
+    {
+      provide: CONSTANTS_REPOSITORY_TOKENS.LEAVE_YEAR_CONFIGURATION,
+      useClass: LeaveYearConfigurationRepositoryImpl,
     },
     CreateLeaveBalanceUseCase,
     GenerateAnnualLeaveBalancesUseCase,

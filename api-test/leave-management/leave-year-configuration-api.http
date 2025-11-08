@@ -1,0 +1,77 @@
+@token = 
+@host = http://localhost:3220/api/v1/leave-year-configuration
+
+###
+# CREATE LEAVE YEAR CONFIGURATION
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cutoffStartDate": "2023-11-26",
+  "cutoffEndDate": "2024-11-25",
+  "remarks": "Standard cutoff period for 2023-2024 leave year"
+}
+
+###
+# CREATE LEAVE YEAR CONFIGURATION - DIFFERENT END DATE
+POST {{host}}
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cutoffStartDate": "2024-11-26",
+  "cutoffEndDate": "2025-11-05",
+  "remarks": "Updated cutoff period with different end date (Nov 5 instead of Nov 25)"
+}
+
+###
+# GET LEAVE YEAR CONFIGURATION BY YEAR
+GET {{host}}/year/2023-2024
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET ACTIVE CUTOFF FOR DATE
+GET {{host}}/active-for-date?date=2024-01-15
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# GET ACTIVE CUTOFF FOR DATE - DIFFERENT PERIOD
+GET {{host}}/active-for-date?date=2024-12-01
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+# UPDATE LEAVE YEAR CONFIGURATION
+PATCH {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "cutoffStartDate": "2023-11-26",
+  "cutoffEndDate": "2024-11-20",
+  "remarks": "Updated cutoff end date to Nov 20"
+}
+
+###
+# UPDATE LEAVE YEAR CONFIGURATION - REMARKS ONLY
+PATCH {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "remarks": "Updated remarks for 2023-2024 cutoff period"
+}
+
+###
+# UPDATE LEAVE YEAR CONFIGURATION - DEACTIVATE
+PATCH {{host}}/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "isActive": false
+}
+

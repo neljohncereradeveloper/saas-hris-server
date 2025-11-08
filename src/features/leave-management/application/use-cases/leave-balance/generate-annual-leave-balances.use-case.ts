@@ -1,5 +1,6 @@
 import { LeavePolicyRepository } from '@features/leave-management/domain/repositories/leave-policy.repository';
 import { LeaveBalanceRepository } from '@features/leave-management/domain/repositories/leave-balance.repository';
+import { LeaveYearConfigurationRepository } from '@features/leave-management/domain/repositories/leave-year-configuration.repository';
 import { EmployeeRepository } from '@features/shared/domain/repositories/employee.repository';
 import { LeavePolicy } from '@features/leave-management/domain/models/leave-policy.model';
 import { LeaveBalance } from '@features/leave-management/domain/models/leave-balance.model';
@@ -16,7 +17,7 @@ import {
 } from '@features/shared/exceptions/shared';
 
 export interface GenerateAnnualLeaveBalancesCommand {
-  year: number;
+  year: string; // Leave year identifier (e.g., "2023-2024")
   forceRegenerate?: boolean; // If true, will regenerate even if balances already exist
 }
 
@@ -29,6 +30,8 @@ export class GenerateAnnualLeaveBalancesUseCase {
     private readonly leavePolicyRepository: LeavePolicyRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.LEAVE_BALANCE)
     private readonly leaveBalanceRepository: LeaveBalanceRepository,
+    @Inject(CONSTANTS_REPOSITORY_TOKENS.LEAVE_YEAR_CONFIGURATION)
+    private readonly leaveYearConfigurationRepository: LeaveYearConfigurationRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.EMPLOYEE)
     private readonly employeeRepository: EmployeeRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.ERROR_HANDLER)
@@ -79,11 +82,34 @@ export class GenerateAnnualLeaveBalancesUseCase {
               throw new NotFoundException('No active employees found');
             }
 
+            // Get the cutoff configuration for the leave year
+            const cutoffConfig =
+              await this.leaveYearConfigurationRepository.findByYear(
+                command.year,
+                manager,
+              );
+            if (!cutoffConfig) {
+              throw new NotFoundException(
+                `Leave year configuration not found for year ${command.year}`,
+              );
+            }
+
+            // Get all configurations to find previous year
+            const allConfigs =
+              await this.leaveYearConfigurationRepository.findAll(manager);
+            const currentConfigIndex = allConfigs.findIndex(
+              (c) => c.year === command.year,
+            );
+            let previousYear: string | null = null;
+            if (currentConfigIndex > 0) {
+              previousYear = allConfigs[currentConfigIndex - 1].year;
+            }
+
             // Step 5: For each employee, loop through each active leave policy
             for (const employee of activeEmployees) {
               for (const policy of activePolicies) {
-                // Check eligibility
-                const referenceDate = new Date(command.year, 0, 1);
+                // Check eligibility using cutoff start date as reference
+                const referenceDate = cutoffConfig.cutoffStartDate;
                 const eligibilityCheck = policy.isEmployeeEligible(
                   employee.hireDate,
                   employee.employeeStatus || '',
@@ -111,13 +137,16 @@ export class GenerateAnnualLeaveBalancesUseCase {
                 }
 
                 // Step 6: Check if a previous year leave balance exists for the same employee and leave type
-                const previousYearBalance =
-                  await this.leaveBalanceRepository.findByLeaveType(
-                    employee.id!,
-                    policy.leaveTypeId,
-                    command.year - 1,
-                    manager,
-                  );
+                let previousYearBalance: LeaveBalance | null = null;
+                if (previousYear) {
+                  previousYearBalance =
+                    await this.leaveBalanceRepository.findByLeaveType(
+                      employee.id!,
+                      policy.leaveTypeId,
+                      previousYear,
+                      manager,
+                    );
+                }
 
                 // Step 7: Calculate carry-over days based on the previous balance and policy rules
                 const carryOverDays = this.calculateCarryOverDays(

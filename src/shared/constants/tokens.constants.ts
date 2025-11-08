@@ -94,6 +94,8 @@ export const CONSTANTS_REPOSITORY_TOKENS = {
   LEAVE_REQUEST: 'leave_request',
   /** leave_transaction */
   LEAVE_TRANSACTION: 'leave_transaction',
+  /** leave_year_configuration */
+  LEAVE_YEAR_CONFIGURATION: 'leave_year_configuration',
   /** holiday */
   HOLIDAY: 'holiday',
 

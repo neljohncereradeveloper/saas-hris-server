@@ -21,6 +21,7 @@ import { EmployeeRepositoryImpl } from '@features/201-files/infrastructure/datab
 import { ErrorHandlerService } from '@features/shared/infrastructure/services/error-handler.service';
 import { HolidayRepositoryImpl } from '@features/shared/infrastructure/database/typeorm/postgresql/repositories/holiday.repository';
 import { LeavePolicyRepositoryImpl } from '../../database/typeorm/postgreSQL/repositories/leave-policy.repository';
+import { LeaveYearConfigurationRepositoryImpl } from '../../database/typeorm/postgreSQL/repositories/leave-year-configuration.repository';
 
 @Module({
   imports: [PostgresqlDatabaseModule],
@@ -65,6 +66,10 @@ import { LeavePolicyRepositoryImpl } from '../../database/typeorm/postgreSQL/rep
     {
       provide: CONSTANTS_REPOSITORY_TOKENS.HOLIDAY,
       useClass: HolidayRepositoryImpl,
+    },
+    {
+      provide: CONSTANTS_REPOSITORY_TOKENS.LEAVE_YEAR_CONFIGURATION,
+      useClass: LeaveYearConfigurationRepositoryImpl,
     },
     CreateLeaveRequestUseCase,
     UpdateLeaveRequestUseCase,
