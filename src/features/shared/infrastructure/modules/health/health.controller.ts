@@ -1,4 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import {
   HealthCheckService,
   HealthCheck,
@@ -11,12 +12,21 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 @ApiTags('Health')
 @Controller('health')
 export class HealthController {
+  private readonly dbTimeout: number;
+
   constructor(
     private readonly health: HealthCheckService,
     private readonly db: TypeOrmHealthIndicator,
     private readonly memory: MemoryHealthIndicator,
     private readonly disk: DiskHealthIndicator,
-  ) {}
+    private readonly configService: ConfigService,
+  ) {
+    // Get database health check timeout from environment variable (default: 10000ms)
+    this.dbTimeout = this.configService.get<number>(
+      'HEALTH_CHECK_DB_TIMEOUT',
+      10000,
+    );
+  }
 
   @Get()
   @HealthCheck()
@@ -31,8 +41,11 @@ export class HealthController {
   })
   check() {
     return this.health.check([
-      // Database health check
-      () => this.db.pingCheck('database'),
+      // Database health check with configurable timeout
+      () =>
+        this.db.pingCheck('database', {
+          timeout: this.dbTimeout,
+        }),
       // Memory health check - heap used should not exceed 1.5GB
       () => this.memory.checkHeap('memory_heap', 1500 * 1024 * 1024),
       // Memory health check - RSS should not exceed 1.5GB
@@ -56,7 +69,12 @@ export class HealthController {
     description: 'Application is alive',
   })
   liveness() {
-    return this.health.check([() => this.db.pingCheck('database')]);
+    return this.health.check([
+      () =>
+        this.db.pingCheck('database', {
+          timeout: this.dbTimeout,
+        }),
+    ]);
   }
 
   @Get('readiness')
@@ -70,7 +88,10 @@ export class HealthController {
   })
   readiness() {
     return this.health.check([
-      () => this.db.pingCheck('database'),
+      () =>
+        this.db.pingCheck('database', {
+          timeout: this.dbTimeout,
+        }),
       () => this.memory.checkHeap('memory_heap', 1500 * 1024 * 1024),
     ]);
   }
