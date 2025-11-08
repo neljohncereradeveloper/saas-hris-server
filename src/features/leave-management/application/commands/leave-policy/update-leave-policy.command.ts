@@ -7,4 +7,6 @@ export class UpdateLeavePolicyCommand {
   effectiveDate?: Date;
   expiryDate?: Date;
   remarks?: string;
+  minimumServiceMonths?: number;
+  allowedEmployeeStatuses?: string[];
 }

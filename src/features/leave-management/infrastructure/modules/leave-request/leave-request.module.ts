@@ -20,6 +20,7 @@ import { LeaveTransactionRepositoryImpl } from '../../database/typeorm/postgreSQ
 import { EmployeeRepositoryImpl } from '@features/201-files/infrastructure/database/typeorm/postgreSQL/repositories/employee.repository';
 import { ErrorHandlerService } from '@features/shared/infrastructure/services/error-handler.service';
 import { HolidayRepositoryImpl } from '@features/shared/infrastructure/database/typeorm/postgresql/repositories/holiday.repository';
+import { LeavePolicyRepositoryImpl } from '../../database/typeorm/postgreSQL/repositories/leave-policy.repository';
 
 @Module({
   imports: [PostgresqlDatabaseModule],
@@ -40,6 +41,10 @@ import { HolidayRepositoryImpl } from '@features/shared/infrastructure/database/
     {
       provide: CONSTANTS_REPOSITORY_TOKENS.LEAVE_TYPE,
       useClass: LeaveTypeRepositoryImpl,
+    },
+    {
+      provide: CONSTANTS_REPOSITORY_TOKENS.LEAVE_POLICY,
+      useClass: LeavePolicyRepositoryImpl,
     },
     {
       provide: CONSTANTS_REPOSITORY_TOKENS.LEAVE_TRANSACTION,

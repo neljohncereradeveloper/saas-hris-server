@@ -41,7 +41,7 @@ export class LeavePolicyRepositoryImpl
       policy.status,
       policy.remarks,
       policy.minimumServiceMonths ?? 0,
-      policy.allowedEmployeeStatuses ?? null,
+      policy.allowedEmployeeStatuses ?? [],
     ]);
 
     const entity = result[0];
@@ -62,7 +62,7 @@ export class LeavePolicyRepositoryImpl
         entity.allowedemployeestatuses &&
         entity.allowedemployeestatuses.length > 0
           ? entity.allowedemployeestatuses
-          : null,
+          : [],
     });
   }
 
@@ -113,7 +113,7 @@ export class LeavePolicyRepositoryImpl
     }
     if (dto.allowedEmployeeStatuses !== undefined) {
       updates.push(`allowedemployeestatuses = $${paramIndex++}::text[]`);
-      params.push(dto.allowedEmployeeStatuses ?? null);
+      params.push(dto.allowedEmployeeStatuses ?? []);
     }
 
     if (updates.length === 0) return false;
@@ -178,7 +178,7 @@ export class LeavePolicyRepositoryImpl
         entity.allowedemployeestatuses &&
         entity.allowedemployeestatuses.length > 0
           ? entity.allowedemployeestatuses
-          : null,
+          : [],
     });
   }
 
@@ -350,7 +350,7 @@ export class LeavePolicyRepositoryImpl
         entity.allowedemployeestatuses &&
         entity.allowedemployeestatuses.length > 0
           ? entity.allowedemployeestatuses
-          : null,
+          : [],
     });
   }
 
