@@ -2,6 +2,7 @@ import { LeaveRequest } from '@features/leave-management/domain/models/leave-req
 import { LeaveRequestRepository } from '@features/leave-management/domain/repositories/leave-request.repository';
 import { LeaveBalanceRepository } from '@features/leave-management/domain/repositories/leave-balance.repository';
 import { LeaveTypeRepository } from '@features/leave-management/domain/repositories/leave-type.repository';
+import { LeavePolicyRepository } from '@features/leave-management/domain/repositories/leave-policy.repository';
 import { HolidayRepository } from '@features/shared/domain/repositories/holiday.repository';
 import { EmployeeRepository } from '@features/shared/domain/repositories/employee.repository';
 import { Inject, Injectable } from '@nestjs/common';
@@ -30,6 +31,8 @@ export class CreateLeaveRequestUseCase {
     private readonly leaveBalanceRepository: LeaveBalanceRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.LEAVE_TYPE)
     private readonly leaveTypeRepository: LeaveTypeRepository,
+    @Inject(CONSTANTS_REPOSITORY_TOKENS.LEAVE_POLICY)
+    private readonly leavePolicyRepository: LeavePolicyRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.HOLIDAY)
     private readonly holidayRepository: HolidayRepository,
     @Inject(CONSTANTS_REPOSITORY_TOKENS.EMPLOYEE)
@@ -83,6 +86,17 @@ export class CreateLeaveRequestUseCase {
               );
             }
 
+            // Get the active leave policy for the leave type
+            const policy = await this.leavePolicyRepository.getActivePolicy(
+              leaveType.id!,
+            );
+
+            if (!policy) {
+              throw new NotFoundException(
+                `Active leave policy not found for leave type "${dto.leaveType}"`,
+              );
+            }
+
             // Convert dates if strings - ensure they are valid Date objects
             let startDate: Date;
             let endDate: Date;
@@ -117,6 +131,19 @@ export class CreateLeaveRequestUseCase {
 
             // Validate dates
             this.validateDates(startDate, endDate);
+
+            // Check eligibility based on hire date and employee status
+            const eligibilityCheck = policy.isEmployeeEligible(
+              employee.hireDate,
+              employee.employeeStatus || '',
+              startDate,
+            );
+
+            if (!eligibilityCheck.eligible) {
+              throw new BadRequestException(
+                `Employee is not eligible for ${dto.leaveType}. ${eligibilityCheck.reason}`,
+              );
+            }
 
             // Calculate total days (use provided totalDays or calculate from dates)
             let totalDays: number;

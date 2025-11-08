@@ -56,6 +56,14 @@ export class LeavePolicyEntity {
   @Column({ type: 'text', nullable: true })
   remarks?: string;
 
+  /** Minimum service period in months required for eligibility (0 = no requirement) */
+  @Column({ type: 'integer', default: 0, nullable: true })
+  minimumservicemonths?: number;
+
+  /** Array of allowed employee status names (null/empty = all statuses allowed) */
+  @Column({ type: 'text', array: true, nullable: true, default: null })
+  allowedemployeestatuses?: string[];
+
   /**
    * RELATIONS
    */

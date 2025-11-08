@@ -3,7 +3,15 @@ import {
   RequiredStringValidation,
   OptionalStringValidation,
 } from '@features/shared/infrastructure/decorators/validation.decorator';
-import { IsNotEmpty, IsDateString, IsOptional } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsDateString,
+  IsOptional,
+  IsInt,
+  Min,
+  IsArray,
+  IsString,
+} from 'class-validator';
 import { RequiredDecimalValidation } from '@features/shared/infrastructure/decorators/validation.decorator';
 import {
   IsDateStringCustom,
@@ -125,4 +133,27 @@ export class CreateLeavePolicyDto {
     sanitize: true,
   })
   remarks?: string;
+
+  @ApiPropertyOptional({
+    description:
+      'Minimum service period in months required for eligibility (e.g., 12 for 1 year, 6 for 6 months). Set to 0 or omit for no requirement.',
+    example: 12,
+    minimum: 0,
+    default: 0,
+  })
+  @IsOptional()
+  @IsInt({ message: 'Minimum service months must be an integer' })
+  @Min(0, { message: 'Minimum service months cannot be negative' })
+  minimumServiceMonths?: number;
+
+  @ApiPropertyOptional({
+    description:
+      'Array of allowed employee statuses (e.g., ["regular"]). Leave empty or null to allow all statuses.',
+    example: ['regular'],
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray({ message: 'Allowed employee statuses must be an array' })
+  @IsString({ each: true, message: 'Each employee status must be a string' })
+  allowedEmployeeStatuses?: string[];
 }

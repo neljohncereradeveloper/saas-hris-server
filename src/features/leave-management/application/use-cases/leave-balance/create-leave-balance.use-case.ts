@@ -83,6 +83,20 @@ export class CreateLeaveBalanceUseCase {
               throw new NotFoundException('Invalid or inactive policy');
             }
 
+            // Check eligibility before creating balance
+            const referenceDate = new Date(dto.year, 0, 1); // Start of the year
+            const eligibilityCheck = policy.isEmployeeEligible(
+              employee.hireDate,
+              employee.employeeStatus || '',
+              referenceDate,
+            );
+
+            if (!eligibilityCheck.eligible) {
+              throw new BadRequestException(
+                `Employee is not eligible for leave type "${dto.leaveType}" in year ${dto.year}. ${eligibilityCheck.reason}`,
+              );
+            }
+
             // Check if a balance already exists for this employee, leave type, and year
             const existingBalance =
               await this.leaveBalanceRepository.findByLeaveType(

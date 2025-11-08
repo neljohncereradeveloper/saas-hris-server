@@ -22,11 +22,13 @@ export class LeavePolicyRepositoryImpl
     const query = `
       INSERT INTO ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} 
         (leavetypeid, annualentitlement, carrylimit, encashlimit, 
-         cyclelengthyears, effectivedate, expirydate, status, remarks)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+         cyclelengthyears, effectivedate, expirydate, status, remarks,
+         minimumservicemonths, allowedemployeestatuses)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11::text[])
       RETURNING id, leavetypeid, annualentitlement, carrylimit, encashlimit, 
                 cyclelengthyears, effectivedate::text as effectivedate, expirydate::text as expirydate, 
-                status, remarks, isactive
+                status, remarks, isactive, minimumservicemonths, 
+                COALESCE(allowedemployeestatuses, ARRAY[]::text[]) as allowedemployeestatuses
     `;
     const result = await manager.query(query, [
       policy.leaveTypeId,
@@ -38,6 +40,8 @@ export class LeavePolicyRepositoryImpl
       policy.expiryDate,
       policy.status,
       policy.remarks,
+      policy.minimumServiceMonths ?? 0,
+      policy.allowedEmployeeStatuses ?? null,
     ]);
 
     const entity = result[0];
@@ -53,6 +57,12 @@ export class LeavePolicyRepositoryImpl
       status: entity.status,
       remarks: entity.remarks,
       isActive: entity.isactive,
+      minimumServiceMonths: entity.minimumservicemonths ?? 0,
+      allowedEmployeeStatuses:
+        entity.allowedemployeestatuses &&
+        entity.allowedemployeestatuses.length > 0
+          ? entity.allowedemployeestatuses
+          : null,
     });
   }
 
@@ -97,6 +107,14 @@ export class LeavePolicyRepositoryImpl
       updates.push(`remarks = $${paramIndex++}`);
       params.push(dto.remarks);
     }
+    if (dto.minimumServiceMonths !== undefined) {
+      updates.push(`minimumservicemonths = $${paramIndex++}`);
+      params.push(dto.minimumServiceMonths);
+    }
+    if (dto.allowedEmployeeStatuses !== undefined) {
+      updates.push(`allowedemployeestatuses = $${paramIndex++}::text[]`);
+      params.push(dto.allowedEmployeeStatuses ?? null);
+    }
 
     if (updates.length === 0) return false;
 
@@ -131,7 +149,8 @@ export class LeavePolicyRepositoryImpl
     const query = `
       SELECT lp.id, lp.leavetypeid, lt.name as leavetype, lp.annualentitlement, lp.carrylimit, lp.encashlimit, 
              lp.cyclelengthyears, lp.effectivedate::text as effectivedate, lp.expirydate::text as expirydate, 
-             lp.status, lp.remarks, lp.isactive
+             lp.status, lp.remarks, lp.isactive, lp.minimumservicemonths,
+             COALESCE(lp.allowedemployeestatuses, ARRAY[]::text[]) as allowedemployeestatuses
       FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} lp
       LEFT JOIN ${CONSTANTS_DATABASE_MODELS.LEAVE_TYPE} lt ON lp.leavetypeid = lt.id
       WHERE lp.id = $1
@@ -154,6 +173,12 @@ export class LeavePolicyRepositoryImpl
       status: entity.status,
       remarks: entity.remarks,
       isActive: entity.isactive,
+      minimumServiceMonths: entity.minimumservicemonths ?? 0,
+      allowedEmployeeStatuses:
+        entity.allowedemployeestatuses &&
+        entity.allowedemployeestatuses.length > 0
+          ? entity.allowedemployeestatuses
+          : null,
     });
   }
 
@@ -198,7 +223,8 @@ export class LeavePolicyRepositoryImpl
     const dataQuery = `
       SELECT lp.id, lp.leavetypeid, lt.name as leavetype, lp.annualentitlement, lp.carrylimit, lp.encashlimit, 
              lp.cyclelengthyears, lp.effectivedate::text as effectivedate, lp.expirydate::text as expirydate, 
-             lp.status, lp.remarks, lp.isactive
+             lp.status, lp.remarks, lp.isactive, lp.minimumservicemonths,
+             COALESCE(lp.allowedemployeestatuses, ARRAY[]::text[]) as allowedemployeestatuses
       FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} lp 
       LEFT JOIN ${CONSTANTS_DATABASE_MODELS.LEAVE_TYPE} lt ON lp.leavetypeid = lt.id
       ${whereClause}
@@ -224,6 +250,12 @@ export class LeavePolicyRepositoryImpl
           status: entity.status,
           remarks: entity.remarks,
           isActive: entity.isactive,
+          minimumServiceMonths: entity.minimumservicemonths ?? 0,
+          allowedEmployeeStatuses:
+            entity.allowedemployeestatuses &&
+            entity.allowedemployeestatuses.length > 0
+              ? entity.allowedemployeestatuses
+              : null,
         }),
     );
 
@@ -248,7 +280,8 @@ export class LeavePolicyRepositoryImpl
     const query = `
       SELECT lp.id, lp.leavetypeid, lt.name as leavetype, lp.annualentitlement, lp.carrylimit, lp.encashlimit, 
              lp.cyclelengthyears, lp.effectivedate::text as effectivedate, lp.expirydate::text as expirydate, 
-             lp.status, lp.remarks, lp.isactive
+             lp.status, lp.remarks, lp.isactive, lp.minimumservicemonths,
+             COALESCE(lp.allowedemployeestatuses, ARRAY[]::text[]) as allowedemployeestatuses
       FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} lp
       LEFT JOIN ${CONSTANTS_DATABASE_MODELS.LEAVE_TYPE} lt ON lp.leavetypeid = lt.id
       WHERE lp.status = 'active' AND lp.isactive = true
@@ -271,6 +304,12 @@ export class LeavePolicyRepositoryImpl
           status: entity.status,
           remarks: entity.remarks,
           isActive: entity.isactive,
+          minimumServiceMonths: entity.minimumservicemonths ?? 0,
+          allowedEmployeeStatuses:
+            entity.allowedemployeestatuses &&
+            entity.allowedemployeestatuses.length > 0
+              ? entity.allowedemployeestatuses
+              : null,
         }),
     );
   }
@@ -279,7 +318,8 @@ export class LeavePolicyRepositoryImpl
     const query = `
       SELECT lp.id, lp.leavetypeid, lt.name as leavetype, lp.annualentitlement, lp.carrylimit, lp.encashlimit, 
              lp.cyclelengthyears, lp.effectivedate::text as effectivedate, lp.expirydate::text as expirydate, 
-             lp.status, lp.remarks, lp.isactive
+             lp.status, lp.remarks, lp.isactive, lp.minimumservicemonths,
+             COALESCE(lp.allowedemployeestatuses, ARRAY[]::text[]) as allowedemployeestatuses
       FROM ${CONSTANTS_DATABASE_MODELS.LEAVE_POLICY} lp
       LEFT JOIN ${CONSTANTS_DATABASE_MODELS.LEAVE_TYPE} lt ON lp.leavetypeid = lt.id
       WHERE lp.leavetypeid = $1 AND lp.status = 'active' AND lp.isactive = true
@@ -305,6 +345,12 @@ export class LeavePolicyRepositoryImpl
       status: entity.status,
       remarks: entity.remarks,
       isActive: entity.isactive,
+      minimumServiceMonths: entity.minimumservicemonths ?? 0,
+      allowedEmployeeStatuses:
+        entity.allowedemployeestatuses &&
+        entity.allowedemployeestatuses.length > 0
+          ? entity.allowedemployeestatuses
+          : null,
     });
   }
 

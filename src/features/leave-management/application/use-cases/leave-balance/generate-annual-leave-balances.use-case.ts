@@ -82,6 +82,19 @@ export class GenerateAnnualLeaveBalancesUseCase {
             // Step 5: For each employee, loop through each active leave policy
             for (const employee of activeEmployees) {
               for (const policy of activePolicies) {
+                // Check eligibility
+                const referenceDate = new Date(command.year, 0, 1);
+                const eligibilityCheck = policy.isEmployeeEligible(
+                  employee.hireDate,
+                  employee.employeeStatus || '',
+                  referenceDate,
+                );
+
+                if (!eligibilityCheck.eligible) {
+                  skippedCount++;
+                  continue; // Skip creating balance for ineligible employees
+                }
+
                 // Check if balance already exists for this employee, leave type, and year
                 const existingBalance =
                   await this.leaveBalanceRepository.findByLeaveType(
