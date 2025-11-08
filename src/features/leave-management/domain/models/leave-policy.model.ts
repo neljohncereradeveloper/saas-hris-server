@@ -66,7 +66,7 @@ export class LeavePolicy {
       if (monthsOfService < this.minimumServiceMonths) {
         return {
           eligible: false,
-          reason: `Minimum service period not met. Required: ${this.minimumServiceMonths} months, Employee has: ${monthsOfService} months`,
+          reason: `Minimum service period not met. Required: ${this.minimumServiceMonths} months, Employee has: ${monthsOfService} months, Hire Date: ${employeeHireDate.toISOString()}`,
         };
       }
     }

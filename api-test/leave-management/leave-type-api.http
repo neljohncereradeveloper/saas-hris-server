@@ -10,9 +10,9 @@ Authorization: Bearer {{token}}
 {
   "name": "emergency leave",
   "code": "EL",
-  "desc1": "Annual emergency leave for employee rest and recreation",
-  "paid": false,
-  "remarks": "Emergency leave for employee rest and recreation"
+  "desc1": "Emergency leave for employee urgent needs",
+  "paid": true,
+  "remarks": "Emergency leave for employee urgent needs"
 }
 
 ###

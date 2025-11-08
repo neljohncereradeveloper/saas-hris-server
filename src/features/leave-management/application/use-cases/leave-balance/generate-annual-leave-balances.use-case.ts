@@ -21,6 +21,14 @@ export interface GenerateAnnualLeaveBalancesCommand {
   forceRegenerate?: boolean; // If true, will regenerate even if balances already exist
 }
 
+export interface SkippedEmployee {
+  employeeId: number;
+  employeeName: string;
+  leaveType: string;
+  reason: 'ineligible' | 'balance_already_exists';
+  details?: string; // Additional details like eligibility reason
+}
+
 @Injectable()
 export class GenerateAnnualLeaveBalancesUseCase {
   constructor(
@@ -47,7 +55,11 @@ export class GenerateAnnualLeaveBalancesUseCase {
       sessionId?: string;
       username?: string;
     },
-  ): Promise<{ generatedCount: number; skippedCount: number }> {
+  ): Promise<{
+    generatedCount: number;
+    skippedCount: number;
+    skippedEmployees: SkippedEmployee[];
+  }> {
     return this.transactionHelper.executeTransaction(
       CONSTANTS_LOG_ACTION.GENERATE_ANNUAL_LEAVE_BALANCES,
       async (manager) => {
@@ -65,6 +77,7 @@ export class GenerateAnnualLeaveBalancesUseCase {
           async () => {
             let generatedCount = 0;
             let skippedCount = 0;
+            const skippedEmployees: SkippedEmployee[] = [];
 
             // Step 3: Retrieve all active leave policies
             const activePolicies =
@@ -75,7 +88,7 @@ export class GenerateAnnualLeaveBalancesUseCase {
             }
 
             // Step 4: Retrieve all active employees
-            const activeEmployees =
+            const activeEmployees: any =
               await this.employeeRepository.retrieveActiveEmployees(manager);
 
             if (activeEmployees.length === 0) {
@@ -108,16 +121,26 @@ export class GenerateAnnualLeaveBalancesUseCase {
             // Step 5: For each employee, loop through each active leave policy
             for (const employee of activeEmployees) {
               for (const policy of activePolicies) {
+                const hireDate = new Date(employee.hiredate);
                 // Check eligibility using cutoff start date as reference
-                const referenceDate = cutoffConfig.cutoffStartDate;
+                const referenceDate = new Date(cutoffConfig.cutoffStartDate);
                 const eligibilityCheck = policy.isEmployeeEligible(
-                  employee.hireDate,
-                  employee.employeeStatus || '',
+                  hireDate,
+                  employee.empstatus || '',
                   referenceDate,
                 );
 
                 if (!eligibilityCheck.eligible) {
                   skippedCount++;
+                  skippedEmployees.push({
+                    employeeId: employee.id!,
+                    employeeName: this.getEmployeeName(employee),
+                    leaveType: policy.leaveType || 'Unknown Leave Type',
+                    reason: 'ineligible',
+                    details:
+                      eligibilityCheck.reason ||
+                      'Employee is not eligible for this leave type',
+                  });
                   continue; // Skip creating balance for ineligible employees
                 }
 
@@ -133,6 +156,13 @@ export class GenerateAnnualLeaveBalancesUseCase {
                 // Skip if balance already exists and forceRegenerate is false
                 if (existingBalance && !command.forceRegenerate) {
                   skippedCount++;
+                  skippedEmployees.push({
+                    employeeId: employee.id!,
+                    employeeName: this.getEmployeeName(employee),
+                    leaveType: policy.leaveType || 'Unknown Leave Type',
+                    reason: 'balance_already_exists',
+                    details: `Leave balance already exists for year ${command.year}`,
+                  });
                   continue;
                 }
 
@@ -184,7 +214,7 @@ export class GenerateAnnualLeaveBalancesUseCase {
               }
             }
 
-            return { generatedCount, skippedCount };
+            return { generatedCount, skippedCount, skippedEmployees };
           },
           errorHandlerOptions,
           manager,
@@ -211,5 +241,17 @@ export class GenerateAnnualLeaveBalancesUseCase {
     const carryOverDays = Math.min(remainingDays, policy.carryLimit);
 
     return Math.max(0, carryOverDays);
+  }
+
+  /**
+   * Construct employee full name from employee object
+   */
+  private getEmployeeName(employee: any): string {
+    const parts: string[] = [];
+    if (employee.fname) parts.push(employee.fname);
+    if (employee.mname) parts.push(employee.mname);
+    if (employee.lname) parts.push(employee.lname);
+    if (employee.suffix) parts.push(employee.suffix);
+    return parts.length > 0 ? parts.join(' ') : `Employee #${employee.id}`;
   }
 }

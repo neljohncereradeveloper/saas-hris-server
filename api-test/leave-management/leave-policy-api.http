@@ -8,14 +8,16 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "leaveType": "emergency leave",
+  "leaveType": "sick leave",
   "annualEntitlement": 15.00,
   "carryLimit": 5.00,
   "encashLimit": 10.00,
   "cycleLengthYears": 5,
   "effectiveDate": "2024-11-26",
   "expiryDate": "",
-  "remarks": "emergency leave policy for employee urgent needs"
+  "remarks": "sick leave policy for employee medical needs",
+  "minimumServiceMonths": 0,
+  "allowedEmployeeStatuses": ["regular"]
 }
 
 ###
@@ -66,7 +68,7 @@ Authorization: Bearer {{token}}
 
 ###
 # ACTIVATE POLICY
-PATCH {{host}}/5/activate
+PATCH {{host}}/10/activate
 Content-Type: application/json
 Authorization: Bearer {{token}}
 

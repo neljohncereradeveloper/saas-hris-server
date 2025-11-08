@@ -529,25 +529,52 @@ export class EmployeeRepositoryImpl
 
   async retrieveActiveEmployees(manager: EntityManager): Promise<Employee[]> {
     const query = `
-      SELECT id, jobtitleid, empstatusid, branchid, departmentid,
-             hiredate::text as hiredate, enddate::text as enddate, regularizationdate::text as regularizationdate,
-             idnumber, bionumber, imagepath, fname, mname, lname, suffix, 
-             birthdate::text as birthdate, religionid, civilstatusid, age, gender, 
-             citizenshipid, height, weight,
-             homeaddressstreet, homeaddressbarangayid, homeaddresscityid, homeaddressprovinceid, homeaddresszipcode,
-             presentaddressstreet, presentaddressbarangayid, presentaddresscityid, presentaddressprovinceid, presentaddresszipcode,
-             email, cellphonenumber, telephonenumber,
-             emergencycontactname, emergencycontactnumber, emergencycontactrelationship, emergencycontactaddress,
-             husbandorwifename, husbandorwifebirthdate::text as husbandorwifebirthdate, husbandorwifeoccupation, numberofchildren,
-             fathersname, fathersbirthdate::text as fathersbirthdate, fathersoccupation,
-             mothersname, mothersbirthdate::text as mothersbirthdate, mothersoccupation,
-             bankaccountnumber, bankaccountname, bankname, bankbranch,
-             annualsalary, monthlysalary, dailyrate, hourlyrate, phic, hdmf, sssno, tinno, taxexemptcode
-      FROM ${CONSTANTS_DATABASE_MODELS.EMPLOYEE}
-    `;
-    const result = await manager.query(query);
+      SELECT e.id, e.jobtitleid, e.empstatusid, e.branchid, e.departmentid,
+             e.hiredate::text as hiredate, e.enddate::text as enddate, e.regularizationdate::text as regularizationdate,
+             e.idnumber, e.bionumber, e.imagepath, e.fname, e.mname, e.lname, e.suffix, 
+             e.birthdate::text as birthdate, e.religionid, e.civilstatusid, e.age, e.gender, 
+             e.citizenshipid, e.height, e.weight,
+             e.homeaddressstreet, e.homeaddressbarangayid, e.homeaddresscityid, e.homeaddressprovinceid, e.homeaddresszipcode,
+             e.presentaddressstreet, e.presentaddressbarangayid, e.presentaddresscityid, e.presentaddressprovinceid, e.presentaddresszipcode,
+             e.email, e.cellphonenumber, e.telephonenumber,
+             e.emergencycontactname, e.emergencycontactnumber, e.emergencycontactrelationship, e.emergencycontactaddress,
+             e.husbandorwifename, e.husbandorwifebirthdate::text as husbandorwifebirthdate, e.husbandorwifeoccupation, e.numberofchildren,
+             e.fathersname, e.fathersbirthdate::text as fathersbirthdate, e.fathersoccupation,
+             e.mothersname, e.mothersbirthdate::text as mothersbirthdate, e.mothersoccupation,
+             e.bankaccountnumber, e.bankaccountname, e.bankname, e.bankbranch,
+             e.annualsalary, e.monthlysalary, e.dailyrate, e.hourlyrate, e.phic, e.hdmf, e.sssno, e.tinno, e.taxexemptcode,
+             jt.desc1 as jobtitle,
+             es.desc1 as empstatus,
+             b.desc1 as branch,
+             d.desc1 as dept,
+             r.desc1 as religion,
+             cs.desc1 as civilstatus,
+             c.desc1 as citizenship,
+             ha_city.desc1 as homeaddresscity,
+             ha_prov.desc1 as homeaddressprovince,
+             ha_bar.desc1 as homeaddressbarangay,
+             pa_city.desc1 as presentaddresscity,
+             pa_prov.desc1 as presentaddressprovince,
+             pa_bar.desc1 as presentaddressbarangay
+      FROM ${CONSTANTS_DATABASE_MODELS.EMPLOYEE} e
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.JOBTITLE} jt ON e.jobtitleid = jt.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.EMPSTATUS} es ON e.empstatusid = es.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.BRANCH} b ON e.branchid = b.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.DEPARTMENT} d ON e.departmentid = d.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.RELIGION} r ON e.religionid = r.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.CIVILSTATUS} cs ON e.civilstatusid = cs.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.CITIZENSHIP} c ON e.citizenshipid = c.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.CITY} ha_city ON e.homeaddresscityid = ha_city.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.PROVINCE} ha_prov ON e.homeaddressprovinceid = ha_prov.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.BARANGAY} ha_bar ON e.homeaddressbarangayid = ha_bar.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.CITY} pa_city ON e.presentaddresscityid = pa_city.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.PROVINCE} pa_prov ON e.presentaddressprovinceid = pa_prov.id
+      LEFT JOIN ${CONSTANTS_DATABASE_MODELS.BARANGAY} pa_bar ON e.presentaddressbarangayid = pa_bar.id
+      WHERE es.desc1 IN ($1) 
+      `;
+    const result = await manager.query(query, ['regular']);
 
-    return result.map((entity: any) => this.mapEntityToModel(entity));
+    return result;
   }
 
   private mapEntityToModel(entity: any): Employee {

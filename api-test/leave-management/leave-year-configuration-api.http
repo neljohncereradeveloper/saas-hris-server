@@ -8,9 +8,9 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-  "cutoffStartDate": "2023-11-26",
-  "cutoffEndDate": "2024-11-25",
-  "remarks": "Standard cutoff period for 2023-2024 leave year"
+  "cutoffStartDate": "2024-11-26",
+  "cutoffEndDate": "2025-11-05",
+  "remarks": "Standard cutoff period for 2024-2025 leave year"
 }
 
 ###
