@@ -246,7 +246,7 @@ export class CreateLeaveRequestUseCase {
                 manager,
               );
 
-            console.log('overlappingRequests : ', overlappingRequests);
+            // console.log('overlappingRequests : ', overlappingRequests);
 
             if (overlappingRequests.length > 0) {
               const overlappingDates = overlappingRequests

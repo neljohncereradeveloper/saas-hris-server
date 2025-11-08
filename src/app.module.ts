@@ -6,6 +6,7 @@ import { Core201FileModule } from '@features/201-files/infrastructure/modules/co
 import { PostgresqlDatabaseModule } from '@features/shared/infrastructure/database/typeorm/postgresql/postgresql-database.module';
 import { CoreLeaveManagementModule } from './features/leave-management/infrastructure/modules/core.module';
 import { HolidayModule } from '@features/shared/infrastructure/modules/holiday/holiday.module';
+import { HealthModule } from '@features/shared/infrastructure/modules/health/health.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { HolidayModule } from '@features/shared/infrastructure/modules/holiday/h
     Core201FileModule,
     CoreLeaveManagementModule,
     HolidayModule,
+    HealthModule,
   ],
 })
 export class AppModule implements NestModule {
